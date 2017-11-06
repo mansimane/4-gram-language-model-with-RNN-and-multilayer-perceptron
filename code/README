@@ -1,0 +1,7 @@
+# Author: Mansi Mane
+
+#Preprocessing of validation data (Run from code directory)
+cat ../data/val.txt | python pre_process.py val.txt
+
+#Pre-processing of Train data
+cat ../data/val.txt | python pre_process.py train.txt
