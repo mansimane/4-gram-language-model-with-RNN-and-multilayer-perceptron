@@ -2,7 +2,6 @@
 Author: Mansi
     -Reads raw text file and dumps processed text file with 'START' and 'END' tags
     -Dumps dictionary of 8000 words if data is training data
-
     Input: text file name
 '''
 import re
@@ -17,7 +16,7 @@ import time
 
 def main ():
     text_file_name = '../data/train_with_tags.txt'
-    #vocab = load_obj('vocab')
+    vocab = load_obj('vocab')
     ngram_dict = {}
     with open(text_file_name) as fd_in:
         for line in fd_in.readlines():
@@ -31,30 +30,32 @@ def main ():
                 else:
                     ngram_dict[ngram_str] = 1
     print len(ngram_dict)
-    str_to_id = {}
-    for s in ngram_dict:
-        str_to_id.setdefault(s, len(str_to_id))
 
-    lists = sorted(str_to_id.items())  # sorted by key, return a list of tuples
 
-    x, y = zip(*lists)  # unpack a list of pairs into two tuples
+    ngram_dict_num = {}
+    i=0
+    for key in ngram_dict.keys():
+        ngram_dict_num[i] = ngram_dict[key]
+        i = i+1
 
+    lists = sorted(ngram_dict_num.items())
+    x, y = zip(*lists)
     plt.plot(x, y)
     date = time.strftime("%Y-%m-%d_%H_%M")
+
     plt.savefig('./results/Q3_1_ngram' + date + '.png')
     plt.show()
-
-        #print ngram_dict
-    #lists = sorted(ngram_dict.items())  # sorted by key, return a list of tuples
-
-    #x, y = zip(*lists)  # unpack a list of pairs into two tuples
-
+    # #print ngram_dict
+    # lists = sorted(ngram_dict.items())  # sorted by key, return a list of tuples
+    #
+    # x, y = zip(*lists)  # unpack a list of pairs into two tuples
+    #
     # plt.plot(x, y)
-    # plt.show()
-    # plt.bar(range(len(ngram_dict)), ngram_dict.values(), align='center')
-    # plt.xticks(range(len(ngram_dict)), ngram_dict.keys())
+    # # plt.show()
+    # #plt.bar(range(len(ngram_dict)), ngram_dict.values(), align='center')
+    # #plt.xticks(range(len(ngram_dict)), ngram_dict.keys())
     # date = time.strftime("%Y-%m-%d_%H_%M")
     # plt.savefig('./results/Q3_1_ngram' + date + '.png')
-    #plt.show()
+    # #plt.show()
 if __name__ == '__main__':
     main()
