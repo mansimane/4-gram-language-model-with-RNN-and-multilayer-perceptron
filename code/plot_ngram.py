@@ -32,14 +32,14 @@ def main ():
                     ngram_dict[ngram_str] = 1
     print len(ngram_dict)
     #print ngram_dict
-    #lists = sorted(ngram_dict.items())  # sorted by key, return a list of tuples
+    lists = sorted(ngram_dict.items())  # sorted by key, return a list of tuples
 
-    #x, y = zip(*lists)  # unpack a list of pairs into two tuples
+    x, y = zip(*lists)  # unpack a list of pairs into two tuples
 
-    # plt.plot(x, y)
+    plt.plot(x, y)
     # plt.show()
-    plt.bar(range(len(ngram_dict)), ngram_dict.values(), align='center')
-    plt.xticks(range(len(ngram_dict)), ngram_dict.keys())
+    #plt.bar(range(len(ngram_dict)), ngram_dict.values(), align='center')
+    #plt.xticks(range(len(ngram_dict)), ngram_dict.keys())
     date = time.strftime("%Y-%m-%d_%H_%M")
     plt.savefig('./results/Q3_1_ngram' + date + '.png')
     #plt.show()
