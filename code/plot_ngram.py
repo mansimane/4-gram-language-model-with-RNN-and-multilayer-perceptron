@@ -43,7 +43,7 @@ def main ():
     plt.plot(x, y)
     date = time.strftime("%Y-%m-%d_%H_%M")
 
-    plt.savefig('./results/Q3_1_ngram' + date + '.png')
+    plt.savefig('../results/Q3_1_ngram' + date + '.png')
     plt.show()
     # #print ngram_dict
     # lists = sorted(ngram_dict.items())  # sorted by key, return a list of tuples
