@@ -9,6 +9,7 @@ import pickle
 import sys
 import os
 import select
+import operator
 from generic_functions import *
 import matplotlib.pylab as plt
 import time
@@ -31,6 +32,7 @@ def main ():
                     ngram_dict[ngram_str] = 1
     print len(ngram_dict)
 
+    ngram_dict = sorted(ngram_dict.items(), key=operator.itemgetter(1))
 
     ngram_dict_num = {}
     i=0
@@ -45,17 +47,6 @@ def main ():
 
     plt.savefig('../results/Q3_1_ngram' + date + '.png')
     plt.show()
-    # #print ngram_dict
-    # lists = sorted(ngram_dict.items())  # sorted by key, return a list of tuples
-    #
-    # x, y = zip(*lists)  # unpack a list of pairs into two tuples
-    #
-    # plt.plot(x, y)
-    # # plt.show()
-    # #plt.bar(range(len(ngram_dict)), ngram_dict.values(), align='center')
-    # #plt.xticks(range(len(ngram_dict)), ngram_dict.keys())
-    # date = time.strftime("%Y-%m-%d_%H_%M")
-    # plt.savefig('./results/Q3_1_ngram' + date + '.png')
-    # #plt.show()
+
 if __name__ == '__main__':
     main()
