@@ -32,7 +32,7 @@ def main ():
                     # param = update_word_vec(param, ngram_list[0:context_size])
                     # #calculate perplexity
 
-            [train_p, val_p, train_loss, val_loss] = loss_calc(param)
+            [train_p, val_p, train_loss, val_loss] = loss_calc(param, hyper_para)
             train_p_list.append(train_p)
             train_loss_list.append(train_loss)
             val_p_list.append(val_p)

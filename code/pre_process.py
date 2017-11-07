@@ -24,13 +24,14 @@ def process_line(line, vocab, vocab_len, fd_out, text_file_name):
     # train file check
     if text_file_name == 'train':
         words = line.split()
-        for w in words:
+#        for w in words:
+        for i in range(len(words)):
             # in vocab, increase count
-            if w in vocab:
-                vocab[w] = vocab[w] + 1
+            if words[i] in vocab:
+                vocab[words[i]] = vocab[words[i]] + 1
             # Not in vocab but max limit not reached yet
-            elif w not in vocab and vocab_len < max_vocab_len:
-                vocab[w] = 1
+            elif words[i] not in vocab and vocab_len < max_vocab_len:
+                vocab[words[i]] = 1
                 vocab_len = vocab_len + 1  # since calling len(vocab may be computationally expensive, keeping
                 # local variable
             # not in vocab, max vocab size reached, increase unknown count
@@ -38,9 +39,11 @@ def process_line(line, vocab, vocab_len, fd_out, text_file_name):
             #and training will become fast as we don't have to do dict search
             else:
                 vocab['UNK'] = vocab['UNK'] + 1
-                line = line.replace(w, ' UNK ')
-
-    fd_out.writelines(line+'\n')
+                words[i] = ' UNK '
+    line_updated = ''
+    for w in words:
+        line_updated = line_updated + ' ' + w
+    fd_out.writelines(line_updated + '\n')
 
     return vocab, vocab_len
 

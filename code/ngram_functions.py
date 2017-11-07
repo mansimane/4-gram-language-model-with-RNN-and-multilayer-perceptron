@@ -126,7 +126,7 @@ def grad_calc (param, x, hyper_para):
 
     return param_grad
 
-def loss_calc(param, xtrain, ytrain, hyper_para):
+def loss_calc(param,  hyper_para):
 
     # w1 = param['w1']  # 784*100
     # w2 = param['w2']  # 100x784
