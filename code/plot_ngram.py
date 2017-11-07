@@ -32,21 +32,22 @@ def main ():
                     ngram_dict[ngram_str] = 1
     print len(ngram_dict)
 
-    ngram_dict = sorted(ngram_dict.items(), key=operator.itemgetter(1))
 
-    ngram_dict_num = {}
-    i=0
-    for key in ngram_dict.keys():
-        ngram_dict_num[i] = ngram_dict[key]
-        i = i+1
+    ngram_list = sorted(ngram_dict.items(), key=operator.itemgetter(1), reverse=True)
 
-    lists = sorted(ngram_dict_num.items())
-    x, y = zip(*lists)
-    plt.plot(x, y)
+    x, y = zip(*ngram_list)
+    x_int = []
+    for i in range(x.__len__()):
+        x_int.append(i)
+    plt.plot(x_int, y)
     date = time.strftime("%Y-%m-%d_%H_%M")
-
     plt.savefig('../results/Q3_1_ngram' + date + '.png')
     plt.show()
+
+    text_file_name = '../results/Q3_1_top_50.txt'
+    with open(text_file_name) as fd_out:
+        for i in range(50):
+            fd_out.writelines(x[i] + '\t\t' + y[i] + '\n')
 
 if __name__ == '__main__':
     main()
