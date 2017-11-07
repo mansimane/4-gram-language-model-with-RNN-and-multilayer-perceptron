@@ -5,10 +5,11 @@ from config_3_2 import *
 from ngram_functions import *
 
 
-def main ():
+def main():
     param = initialize_weights(hyper_para)
     epochs = hyper_para['epochs']
     context_size = hyper_para['context_size']
+    vocab_size = hyper_para['vocab_size']
     train_p_list = []
     val_p_list = []
     train_loss_list = []
@@ -22,10 +23,10 @@ def main ():
                 for i in range(0, len(words) - 3):
                     #send to function to get vec representation
                     ngram_list = words[i:i + 4]
-                    x = get_word_vec(ngram_list[0:context_size], param, context_size)
+                    x,y = get_word_vec(ngram_list[0:context_size], param, context_size, vocab_size)
 
                     # #calculate gradients
-                    # param_grad = grad_calc(param, x, hyper_para)
+                    param_grad = grad_calc(param, x, y, hyper_para)
                     # #update parameters
                     # param = update_param(param, param_grad, hyper_para)
                     # #update embedding vecs

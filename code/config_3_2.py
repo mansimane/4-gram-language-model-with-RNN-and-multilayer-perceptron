@@ -1,6 +1,8 @@
 hyper_para = {}
 hyper_para['epochs'] = 100
 
+hyper_para['batch_size'] = 100
+
 hyper_para['hidden_layer_size'] = 128   # 100 hidden units
 
 hyper_para['drop_out'] = 0.0      # weight decay
