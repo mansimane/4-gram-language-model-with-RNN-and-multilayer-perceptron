@@ -12,9 +12,9 @@ import sys
 import os
 import select
 from generic_functions import *
-
+from config_3_2 import *
 #Global Variables
-max_vocab_len = 8000
+max_vocab_len = hyper_para['vocab_size']
 
 
 def process_line(line, vocab, vocab_len, fd_out, text_file_name):
@@ -38,7 +38,7 @@ def process_line(line, vocab, vocab_len, fd_out, text_file_name):
             #and training will become fast as we don't have to do dict search
             else:
                 vocab['UNK'] = vocab['UNK'] + 1
-                line = line.replace(w, 'UNK')
+                line = line.replace(w, ' UNK ')
 
     fd_out.writelines(line+'\n')
 
@@ -72,7 +72,7 @@ def main():
     fd_out.close()
     assert os.path.exists(cur_path + '/obj/'), ('obj directory does not exist')
     save_obj(vocab, 'vocab')
-    print vocab
+    #print vocab
 
 
 if __name__ == '__main__':

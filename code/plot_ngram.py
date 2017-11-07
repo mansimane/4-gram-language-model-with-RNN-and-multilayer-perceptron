@@ -2,7 +2,7 @@
 Author: Mansi
     -Reads raw text file and dumps processed text file with 'START' and 'END' tags
     -Dumps dictionary of 8000 words if data is training data
-    Input: text file name
+    Input: text file name either val.txt or train.txt
 '''
 import re
 import pickle
@@ -36,6 +36,7 @@ def main ():
     ngram_list = sorted(ngram_dict.items(), key=operator.itemgetter(1), reverse=True)
 
     x, y = zip(*ngram_list)
+    #Will store integer for every unique ngram
     x_int = []
     for i in range(x.__len__()):
         x_int.append(i)
@@ -45,9 +46,10 @@ def main ():
     plt.show()
 
     text_file_name = '../results/Q3_1_top_50.txt'
-    with open(text_file_name) as fd_out:
+    with open(text_file_name,'a') as fd_out:
         for i in range(50):
-            fd_out.writelines(x[i] + '\t\t' + y[i] + '\n')
+            fd_out.write(x[i] + '\t\t' + str(y[i]) + '\n')
 
 if __name__ == '__main__':
     main()
+
