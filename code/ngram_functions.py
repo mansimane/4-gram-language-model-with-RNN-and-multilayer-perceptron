@@ -39,7 +39,7 @@ def initialize_weights(hyper_para):
 
 def get_word_vec(context,param,context_size):
     we_lookup, w1, w2, b1, b2 = param
-    for i in range(0,context_size):
+    for i in range(0, context_size):
         if i is 0:
             x = we_lookup[context[i]]
         else:

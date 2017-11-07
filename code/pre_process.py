@@ -65,8 +65,10 @@ def main():
     else:
         print "No data"
         fd_in_name = cur_path + '/../data/' + sys.argv[1]
+        i=0
         with open(fd_in_name) as fd_in:         #No need of closing it, as with takes care of it
             for line in fd_in.readlines():
+                i = i+1
                 vocab, vocab_len = process_line(line, vocab, vocab_len, fd_out, text_file_name)
 
     fd_out.close()
