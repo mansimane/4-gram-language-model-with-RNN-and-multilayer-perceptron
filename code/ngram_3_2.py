@@ -17,20 +17,18 @@ def main():
 
     for epoch in range(epochs):
         with open(proc_train_file_name) as fd_in:         #No need of closing it, as with takes care of it
-            for line in fd_in.readlines():
-                words = line.split()
-                #loop over 4 grams
-                for i in range(0, len(words) - 3):
-                    #send to function to get vec representation
-                    ngram_list = words[i:i + 4]
-                    x,y = get_word_vec(ngram_list[0:context_size], param, context_size, vocab_size)
+            train_data = fd_in.readlines()
+            #Until and unless obj is modified by function, it is pass by reference
+            #We don't modify train_data in get_word_vec function hence it is pass by reference
+            ngram_list, x, y = get_word_vec(train_data, hyper_para)
 
-                    # #calculate gradients
-                    param_grad = grad_calc(param, x, y, hyper_para)
-                    # #update parameters
-                    # param = update_param(param, param_grad, hyper_para)
-                    # #update embedding vecs
-                    # param = update_word_vec(param, ngram_list[0:context_size])
+
+            ##calculate gradients
+            param_grad = grad_calc(param, x, y, hyper_para)
+            # #update parameters
+            param = update_param(param, param_grad, hyper_para)
+            #update embedding vecs
+            param = update_word_vec(param, ngram_list)
                     # #calculate perplexity
 
             [train_p, val_p, train_loss, val_loss] = loss_calc(param, hyper_para)

@@ -39,18 +39,43 @@ def initialize_weights(hyper_para):
     param = (we_lookup, w1, w2, b1, b2)
     return param
 
-def get_word_vec(ngram, param, context_size, vocab_size):
+def get_word_vec(train_data, hyper_para, param):
     we_lookup, w1, w2, b1, b2 = param
-    for i in range(0, context_size):
-        if i is 0:
-            x = we_lookup[ngram[i][1]]
-        else:
-            x = np.append(x, we_lookup[ngram[i][1]])
-    x = np.reshape(x,(1,len(x)))
-    y = np.zeros((1, vocab_size))
+    vocab_size = hyper_para['vocab_size']
+    context_size = hyper_para['context_size']
+    embed_size = hyper_para['embed_size']
+    if not hasattr(get_word_vec, "line_idx"):
+        get_word_vec.line_idx = 0
+    if not hasattr(get_word_vec, "line_no"):
+        get_word_vec.line_no = 0
+    if not hasattr(get_word_vec, "max_line_no"):
+        get_word_vec.max_line_no = len(train_data)
 
-    #4th word has index 3, hence
-    y[we_lookup[ngram[context_size]][0]] = 1
+    x = np.zeros((0, embed_size))
+    y_batch = np.zeros((0, vocab_size))
+
+    while (x.shape[0] != hyper_para['batch_size']):
+        line = train_data[get_word_vec.line_no]
+        words = line.split()
+        # Loop over lines
+        for i in range(get_word_vec.line_idx, len(words)-3):
+            ngram_list = words[i: i+ hyper_para['no_of_grams']]
+            #Create vector from ngrams
+            for j in range(0, context_size):
+                x = np.append(x, we_lookup[ngram_list[i][1]], axis=0)
+            y = np.zeros((1, vocab_size))
+            y[we_lookup[ngram_list[context_size]][0]] = 1
+            y_batch = np.append(y_batch, y, axis=0)
+            get_word_vec.line_idx += 1
+            if x.shape[0] == hyper_para['batch_size']:
+                return x,y
+
+        get_word_vec.line_idx = 0
+        get_word_vec.line_no += 1
+        #End of file, batch size can be smaller than programmed on for last one
+        if get_word_vec.line_no == get_word_vec.max_line_no:
+            return x,y
+
     return x, y
 
 def update_param (param, param_grad, hyper_parameters):
@@ -66,7 +91,9 @@ def update_param (param, param_grad, hyper_parameters):
         param[i] = param[i] - (lr * param_grad[i])
 
     return param
+def update_word_vec(param, ngram_list):
 
+    return param
 def grad_calc (param, x, y, hyper_para):
     '''
 
