@@ -3,7 +3,7 @@ import select
 from generic_functions import *
 from config_3_2 import *
 from ngram_functions import *
-
+from plotting_funs import *
 
 def main():
     param = initialize_weights(hyper_para)
@@ -33,11 +33,14 @@ def main():
                 ##calculate perplexity
 
                 no_of_ngram_read += x.shape[0]
+                print no_of_ngram_read
             [train_p, val_p, train_loss, val_loss] = loss_calc(param, hyper_para, train_data)
             train_p_list.append(train_p)
             train_loss_list.append(train_loss)
             val_p_list.append(val_p)
             val_loss_list.append(val_loss)
+            print 'epoch', epoch, 'Train loss', train_loss
+    plot_ce_train_valid(train_p_list, val_p_list, hyper_para)
 
 
 if __name__ == '__main__':
