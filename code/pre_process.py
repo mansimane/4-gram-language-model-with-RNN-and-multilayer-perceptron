@@ -40,6 +40,14 @@ def process_line(line, vocab, vocab_len, fd_out, text_file_name):
             else:
                 vocab['UNK'] = vocab['UNK'] + 1
                 words[i] = ' UNK '
+    else:
+        words = line.split()
+        #        for w in words:
+        for i in range(len(words)):
+            # in vocab, increase count
+            if words[i] not in vocab:
+                words[i] = ' UNK '
+
     line_updated = ''
     for w in words:
         line_updated = line_updated + ' ' + w
