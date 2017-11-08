@@ -32,6 +32,10 @@ def main ():
                     ngram_dict[ngram_str] = 1
     print len(ngram_dict)
 
+    total_ngram_cnt = 0
+    for key in ngram_dict.keys():
+        total_ngram_cnt += ngram_dict[key]
+    print 'Total ngrams in the train file are', total_ngram_cnt
 
     ngram_list = sorted(ngram_dict.items(), key=operator.itemgetter(1), reverse=True)
 

@@ -15,23 +15,25 @@ def main():
     train_loss_list = []
     val_loss_list = []
 
-    for epoch in range(epochs):
-        with open(proc_train_file_name) as fd_in:         #No need of closing it, as with takes care of it
-            train_data = fd_in.readlines()
+    with open(proc_train_file_name) as fd_in:  # No need of closing it, as with takes care of it
+        train_data = fd_in.readlines()
+
+        for epoch in range(epochs):
             #Until and unless obj is modified by function, it is pass by reference
             #We don't modify train_data in get_word_vec function hence it is pass by reference
-            ngram_list, x, y = get_word_vec(train_data, hyper_para)
+            print 'epoch', epoch
+            no_of_ngram_read = 0
+            while (no_of_ngram_read <= total_ngrams_in_tr_data):
+                ngram_list, x, y = get_word_vec(train_data, hyper_para, param)
 
+                ##calculate gradients
+                param_grad = grad_calc(param, x, y, hyper_para)
+                ##update parameters
+                param = update_param(param, param_grad, ngram_list, hyper_para)
+                ##calculate perplexity
 
-            ##calculate gradients
-            param_grad = grad_calc(param, x, y, hyper_para)
-            # #update parameters
-            param = update_param(param, param_grad, hyper_para)
-            #update embedding vecs
-            param = update_word_vec(param, ngram_list)
-                    # #calculate perplexity
-
-            [train_p, val_p, train_loss, val_loss] = loss_calc(param, hyper_para)
+                no_of_ngram_read += x.shape[0]
+            [train_p, val_p, train_loss, val_loss] = loss_calc(param, hyper_para, train_data)
             train_p_list.append(train_p)
             train_loss_list.append(train_loss)
             val_p_list.append(val_p)

@@ -1,5 +1,5 @@
 hyper_para = {}
-hyper_para['epochs'] = 100
+hyper_para['epochs'] = 5
 
 hyper_para['batch_size'] = 100
 
@@ -22,3 +22,5 @@ hyper_para['w_init_sig'] = 0.1 # mean and standard deviation
 # train and test files
 proc_train_file_name = '../data/train_with_tags.txt'
 prec_test_file_name = '../data/val_with_tags.txt'
+
+total_ngrams_in_tr_data = 86402
