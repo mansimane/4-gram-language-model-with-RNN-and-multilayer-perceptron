@@ -33,7 +33,7 @@ def main():
                 ##calculate perplexity
 
                 no_of_ngram_read += x.shape[0]
-                print 'epoch', epoch, 'no_of_ngram_read', no_of_ngram_read
+                #print 'epoch', epoch, 'no_of_ngram_read', no_of_ngram_read
             [train_p, val_p, train_loss, val_loss] = loss_calc(param, hyper_para, train_data)
             train_p_list.append(train_p)
             train_loss_list.append(train_loss)
