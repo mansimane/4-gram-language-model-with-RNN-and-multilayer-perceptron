@@ -88,6 +88,56 @@ def get_word_vec(train_data, hyper_para, param):
 
     return ngram_list_batch, x_batch, y_batch
 
+def get_word_vec_val(val_data, hyper_para, param):
+    we_lookup, w1, w2, b1, b2 = param
+    vocab_size = hyper_para['vocab_size']
+    context_size = hyper_para['context_size']
+    embed_size = hyper_para['embed_size']
+
+    if not hasattr(get_word_vec_val, "line_idx"):
+        get_word_vec_val.line_idx = 0
+    if not hasattr(get_word_vec_val, "line_no"):
+        get_word_vec_val.line_no = 0
+    if not hasattr(get_word_vec_val, "max_line_no"):
+        get_word_vec_val.max_line_no = len(val_data)
+    #print 'get_word_vec.line_no', get_word_vec.line_no
+
+    x_batch = np.zeros((0, embed_size* context_size))
+    y_batch = np.zeros((0, vocab_size))
+    ngram_list_batch = []
+    while (x_batch.shape[0] != hyper_para['batch_size']):
+        line = val_data[get_word_vec_val.line_no]
+        words = line.split()
+        # Loop over lines
+        for i in range(get_word_vec_val.line_idx, len(words)-3):
+            ngram_list = words[i: i+ hyper_para['no_of_grams']]
+            ngram_list_batch.append(ngram_list)
+            #Create vector from ngrams
+            x = np.zeros((0, embed_size))
+            for j in range(0, context_size):
+                x = np.append(x, we_lookup[ngram_list[j]][1])
+            x = np.reshape(x, (1, embed_size * context_size))
+            x_batch = np.append(x_batch, x, axis=0 )
+
+            #Create output vector
+            y = np.zeros((1, vocab_size))
+            y[0, we_lookup[ngram_list[context_size]][0]] = 1
+            y_batch = np.append(y_batch, y, axis=0)
+            get_word_vec_val.line_idx += 1
+            if x_batch.shape[0] == hyper_para['batch_size']:
+                return ngram_list_batch, x_batch, y_batch
+
+        get_word_vec_val.line_idx = 0
+        get_word_vec_val.line_no += 1
+
+        #End of file, batch size can be smaller than programmed on for last one
+        if get_word_vec_val.line_no == get_word_vec_val.max_line_no:
+            get_word_vec_val.line_idx = 0
+            get_word_vec_val.line_no = 0
+            return ngram_list_batch, x_batch, y_batch
+
+    return ngram_list_batch, x_batch, y_batch
+
 
 def loss_calc(param, hyper_para, train_data):
     we_lookup, w1, w2, b1, b2 = param
@@ -96,6 +146,7 @@ def loss_calc(param, hyper_para, train_data):
     no_of_ngram_read = 0
     total_ngrams_in_tr_data = 86402
     train_loss = 0
+    train_p = 0
     while (no_of_ngram_read <= total_ngrams_in_tr_data):
         ngram_list, x, y = get_word_vec(train_data, hyper_para, param)
         no_of_samples = x.shape[0]
@@ -111,31 +162,47 @@ def loss_calc(param, hyper_para, train_data):
         #**You should include other classes as well
         y_corr_idx = y_corr_idx.astype(int)
         y_prob_right = y_pred[range(no_of_samples), y_corr_idx]
-        y_prob_right = -np.log(y_prob_right)
-        train_loss += np.sum(y_prob_right)/len(y_prob_right)
+        y_pred[range(no_of_samples), y_corr_idx] = 0
+        y_prob_wrng = -np.log(1 - y_pred)   #the right ones have zero so log(1-0)= 0 contribution in error
 
+        y_prob_right = -np.log(y_prob_right)
+        train_loss += (np.sum(y_prob_right)+ np.sum(np.sum(y_prob_wrng)))/len(y_prob_right)
+
+        train_p += np.power(2.0, train_loss)
         no_of_ngram_read += x.shape[0]
-        # ###### Drop out during testing
-    # mask = np.ones((xtrain.shape)) * (1.0 - hyper_para['drop_out'])
-    # xtrain = np.multiply(xtrain, mask)
-    #
-    # #### Forward pass
-    # a1 = act_forward(xtrain, w1, b1)  # nx100 = nx784 * 784*100
-    #
-    # h1 = sigmoid_forward(a1)  # n x 100 #same as before,
-    #
-    # a2 = act_forward(h1, w2, b2)  # nx100 = nx100 * 100x100
-    #
-    # x_hat = sigmoid_forward(a2)  # n x 100 #same as before,
-    #
-    # loss = (xtrain * np.log(x_hat)) + ((1 - xtrain) * np.log(1 - x_hat))
-    # loss = -loss
-    # loss = np.sum(loss, axis=0)    #sum across all rows, examples
-    # loss = np.sum(loss, axis=0)     #sum across all cols, pixel values
-    # loss = loss / xtrain.shape[0]
-    train_p = 0
-    val_p = 0
+
+    #Validation DATA loss calculation
+    proc_test_file_name = hyper_para['proc_test_file_name']
+    total_ngrams_in_val_data = hyper_para['total_ngrams_in_val_data']
+    with open(proc_test_file_name) as fd_val:
+        val_data = fd_val.readlines()
+    no_of_ngram_read = 0
     val_loss = 0
+    val_p = 0
+    while (no_of_ngram_read <= total_ngrams_in_val_data):
+        ngram_list, x, y = get_word_vec_val(val_data, hyper_para, param)
+        no_of_samples = x.shape[0]
+        #Forward pass
+        a1 = act_forward(x, w1, b1)
+        a2 = act_forward(a1, w2, b2)
+        y_pred = softmax_forward(a2)
+        y_corr_idx = np.zeros((y_pred.shape[0]))
+
+        for i in range(y_pred.shape[0]):
+            cor_word = ngram_list[i][context_size]
+            y_corr_idx[i] = we_lookup[cor_word][0]
+        #**You should include other classes as well
+        y_corr_idx = y_corr_idx.astype(int)
+        y_prob_right = y_pred[range(no_of_samples), y_corr_idx]
+        y_pred[range(no_of_samples), y_corr_idx] = 0
+        y_prob_wrng = -np.log(1 - y_pred)   #the right ones have zero so log(1-0)= 0 contribution in error
+
+        y_prob_right = -np.log(y_prob_right)
+        val_loss += (np.sum(y_prob_right)+ np.sum(np.sum(y_prob_wrng)))/len(y_prob_right)
+
+        val_p += np.power(2.0, val_loss) #*** 2.7 for natural log
+        no_of_ngram_read += x.shape[0]
+
     return train_p, val_p, train_loss, val_loss
 
 

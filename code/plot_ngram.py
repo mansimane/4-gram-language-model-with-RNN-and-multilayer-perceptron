@@ -16,7 +16,8 @@ import time
 
 
 def main ():
-    text_file_name = '../data/train_with_tags.txt'
+    text_file_name = '../data/val_with_tags.txt'
+    # text_file_name = '../data/train_with_tags.txt'
     vocab = load_obj('vocab')
     ngram_dict = {}
     with open(text_file_name) as fd_in:

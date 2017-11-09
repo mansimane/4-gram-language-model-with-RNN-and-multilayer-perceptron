@@ -21,7 +21,7 @@ def main():
         for epoch in range(epochs):
             #Until and unless obj is modified by function, it is pass by reference
             #We don't modify train_data in get_word_vec function hence it is pass by reference
-            print 'epoch', epoch
+            #print 'epoch', epoch
             no_of_ngram_read = 0
             while (no_of_ngram_read <= total_ngrams_in_tr_data):
                 ngram_list, x, y = get_word_vec(train_data, hyper_para, param)
@@ -39,8 +39,8 @@ def main():
             train_loss_list.append(train_loss)
             val_p_list.append(val_p)
             val_loss_list.append(val_loss)
-            print 'epoch', epoch, 'Train loss', train_loss
-    plot_ce_train_valid(train_p_list, val_p_list, hyper_para)
+            print 'epoch', epoch, 'Train loss', train_loss, 'Val_loss', val_loss
+    plot_loss_train_valid(train_p_list, val_p_list,train_loss_list,val_loss_list,  hyper_para)
 
 
 if __name__ == '__main__':

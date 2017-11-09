@@ -1,7 +1,7 @@
 hyper_para = {}
-hyper_para['epochs'] = 5
+hyper_para['epochs'] = 3
 
-hyper_para['batch_size'] = 100
+hyper_para['batch_size'] = 256
 
 hyper_para['hidden_layer_size'] = 128   # 100 hidden units
 
@@ -21,6 +21,7 @@ hyper_para['w_init_sig'] = 0.1 # mean and standard deviation
 
 # train and test files
 proc_train_file_name = '../data/train_with_tags.txt'
-prec_test_file_name = '../data/val_with_tags.txt'
+hyper_para['proc_test_file_name'] = '../data/val_with_tags.txt'
 
 total_ngrams_in_tr_data = 86402
+hyper_para['total_ngrams_in_val_data'] = 10360
