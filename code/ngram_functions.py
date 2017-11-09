@@ -50,7 +50,7 @@ def get_word_vec(train_data, hyper_para, param):
         get_word_vec.line_no = 0
     if not hasattr(get_word_vec, "max_line_no"):
         get_word_vec.max_line_no = len(train_data)
-    print 'get_word_vec.line_no', get_word_vec.line_no
+    #print 'get_word_vec.line_no', get_word_vec.line_no
 
     x_batch = np.zeros((0, embed_size* context_size))
     y_batch = np.zeros((0, vocab_size))
@@ -109,6 +109,7 @@ def loss_calc(param, hyper_para, train_data):
             cor_word = ngram_list[i][context_size]
             y_corr_idx[i] = we_lookup[cor_word][0]
         #**You should include other classes as well
+        y_corr_idx = y_corr_idx.astype(int)
         y_prob_right = y_pred[range(no_of_samples), y_corr_idx]
         y_prob_right = -np.log(y_prob_right)
         train_loss += np.sum(y_prob_right)/len(y_prob_right)
