@@ -19,9 +19,13 @@ hyper_para['context_size'] = hyper_para['no_of_grams'] - 1
 hyper_para['w_init_mu'] = 0
 hyper_para['w_init_sig'] = 0.1 # mean and standard deviation
 
-# train and test files
-proc_train_file_name = '../data/train_with_tags.txt'
-hyper_para['proc_test_file_name'] = '../data/val_with_tags.txt'
+hyper_para['c_init_mu'] = 0
+hyper_para['c_init_sig'] = 0.1 # mean and standard deviation
 
-total_ngrams_in_tr_data = 86402
+# train and test files
+hyper_para['proc_train_file_name'] = '../data/train_with_tags.txt'
+hyper_para['proc_val_file_name'] = '../data/val_with_tags.txt'
+
+#Not a hyperpara, but just to make evident that it came from here
+hyper_para['total_ngrams_in_tr_data'] = 86402
 hyper_para['total_ngrams_in_val_data'] = 10360

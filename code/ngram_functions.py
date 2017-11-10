@@ -15,13 +15,19 @@ def initialize_weights(hyper_para):
     sigma = hyper_para['w_init_sig']
     embed_size = hyper_para['embed_size']
     vocab_size = hyper_para['vocab_size']
+    mu_c = hyper_para['c_init_mu']
+    sig_c = hyper_para['c_init_sig']
 
     #Lookup table 8000x16, dictionary
-    we_lookup = load_obj('vocab')
+    vocab = load_obj('vocab')
+    vocab_dict = {}
     i=0
-    for key in we_lookup:
-        we_lookup[key] = [i,np.random.normal(mu, sigma, (1,embed_size))]
-        i = i + 1
+    for key in vocab:
+        vocab_dict[key] = i
+        i = i+1
+    vocab_dict_inv  = {y:x for x,y in vocab_dict.iteritems()}
+    we_lookup = np.random.normal(mu_c, sig_c, (vocab_size*embed_size))
+    we_lookup = we_lookup.reshape(vocab_size,embed_size)
 
     #Weights for activation layer 1, 48x128
     input_layer_size = hyper_para['context_size']*hyper_para['embed_size']
@@ -36,7 +42,14 @@ def initialize_weights(hyper_para):
     w2 = w2.reshape(hidden_layer_size, vocab_size)
     b2 = np.random.normal(mu, sigma, (1, vocab_size))
 
-    param = (we_lookup, w1, w2, b1, b2)
+    param = {}
+    param['we_lookup'] = we_lookup
+    param['vocab_dict'] = vocab_dict
+    param['vocab_dict_inv'] = vocab_dict_inv
+    param['w1'] = w1
+    param['w2'] = w2
+    param['b1'] = b1
+    param['b2'] = b2
     return param
 
 def get_word_vec(train_data, hyper_para, param):
@@ -159,6 +172,7 @@ def loss_calc(param, hyper_para, train_data):
         for i in range(y_pred.shape[0]):
             cor_word = ngram_list[i][context_size]
             y_corr_idx[i] = we_lookup[cor_word][0]
+
         #**You should include other classes as well
         y_corr_idx = y_corr_idx.astype(int)
         y_prob_right = y_pred[range(no_of_samples), y_corr_idx]

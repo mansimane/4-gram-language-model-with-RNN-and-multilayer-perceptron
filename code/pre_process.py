@@ -70,12 +70,12 @@ def main():
     fd_out = open(cur_path + '/../data/' + text_file_name + '_with_tags.txt', 'w+')
     #If text input is given fron pipe
     if select.select([sys.stdin, ], [], [], 0.0)[0]:
-        print "Have data!"
+        print "Have data, taiking text from command line"
         for line in sys.stdin:
         # Read from text file
             vocab, vocab_len = process_line(line, vocab, vocab_len, fd_out, text_file_name)
     else:
-        print "No data"
+        print "No data, reading text from text file"
         fd_in_name = cur_path + '/../data/' + sys.argv[1]
         i=0
         with open(fd_in_name) as fd_in:         #No need of closing it, as with takes care of it
