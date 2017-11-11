@@ -55,7 +55,7 @@ def main():
          train_loss_list.append(train_loss)
          val_p_list.append(val_p)
          val_loss_list.append(val_loss)
-         print 'epoch', epoch, '\ttime', time.clock(), '\tTrain loss', train_loss, '\t Val_loss', val_loss
+         print 'epoch', epoch, '\ttime', time.clock(), '\tTrain loss', train_loss, '\t Val_loss', val_loss, 'Train Per',train_p, 'Val Per', val_p
          if epoch == 100:
              date = time.strftime("%Y-%m-%d_%H_%M")
              save_obj([train_p,train_loss,val_p,val_loss],'results'+ date)
