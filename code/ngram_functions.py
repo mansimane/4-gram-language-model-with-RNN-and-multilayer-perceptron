@@ -163,18 +163,12 @@ def loss_calc(param, hyper_para, data_x, data_y):
     embed_size = hyper_para['embed_size']
     vocab_size = hyper_para['vocab_size']
     no_of_samples = data_x.shape[0]
-    train_loss = 0
-    train_p = 0
-    we_lookup = param['we_lookup']
-    w1 = param['w1']
-    w2 = param['w2']
-    b2 = param['b2']
-    b1 = param['b1']
-    x = np.zeros((no_of_samples, vocab_size * embed_size))
 
-    x[:, 0:16] = we_lookup[data_x[:, 0]]
-    x[:, 16:32] = we_lookup[data_x[:, 1]]
-    x[:, 32:48] = we_lookup[data_x[:, 2]]
+    x = np.zeros((no_of_samples, context_size * embed_size))
+
+    x[:, 0:16] = we_lookup[data_x[:, 0].astype(int)]
+    x[:, 16:32] = we_lookup[data_x[:, 1].astype(int)]
+    x[:, 32:48] = we_lookup[data_x[:, 2].astype(int)]
 
     # #### Forward pass
     a1 = act_forward(x, w1, b1) #nx128 = nx48 * 48*128
@@ -183,42 +177,15 @@ def loss_calc(param, hyper_para, data_x, data_y):
 
     y_pred = softmax_forward(a2)
 
+    #Forward pass
+    prod = np.multiply(y_pred, data_y)
+    loss_arr = -np.log(prod[prod!=0])
+    loss = np.sum(loss_arr)/loss_arr.shape[0]
 
 
-
-    #Validation DATA loss calculation
-    proc_test_file_name = hyper_para['proc_test_file_name']
-    total_ngrams_in_val_data = hyper_para['total_ngrams_in_val_data']
-    with open(proc_test_file_name) as fd_val:
-        val_data = fd_val.readlines()
-    no_of_ngram_read = 0
-    val_loss = 0
-    val_p = 0
-    while (no_of_ngram_read <= total_ngrams_in_val_data):
-        ngram_list, x, y = get_word_vec_val(val_data, hyper_para, param)
-        no_of_samples = x.shape[0]
-        #Forward pass
-        a1 = act_forward(x, w1, b1)
-        a2 = act_forward(a1, w2, b2)
-        y_pred = softmax_forward(a2)
-        y_corr_idx = np.zeros((y_pred.shape[0]))
-
-        for i in range(y_pred.shape[0]):
-            cor_word = ngram_list[i][context_size]
-            y_corr_idx[i] = we_lookup[cor_word][0]
-        #**You should include other classes as well
-        y_corr_idx = y_corr_idx.astype(int)
-        y_prob_right = y_pred[range(no_of_samples), y_corr_idx]
-        y_pred[range(no_of_samples), y_corr_idx] = 0
-        y_prob_wrng = -np.log(1 - y_pred)   #the right ones have zero so log(1-0)= 0 contribution in error
-
-        y_prob_right = -np.log(y_prob_right)
-        val_loss += (np.sum(y_prob_right)+ np.sum(np.sum(y_prob_wrng)))/len(y_prob_right)
-
-        val_p += np.power(2.0, val_loss) #*** 2.7 for natural log
-        no_of_ngram_read += x.shape[0]
-
-    return train_p, val_p, train_loss, val_loss
+    per_arr = np.power(2.71, loss_arr) #*** 2.7 for natural log
+    per = np.sum(per_arr)/loss_arr.shape[0]
+    return per, loss
 
 
 def update_param (param, param_grad, x_train, hyper_parameters):
@@ -247,14 +214,14 @@ def update_param (param, param_grad, x_train, hyper_parameters):
     b2 = b2 - (lr * (b2_grad/batch_size))
     b1 = b1 - (lr * (b1_grad/batch_size))
 
-    #Use vectorized implementation
+    #****Use vectorized implementation
     for i in range(we_grad.shape[0]):
             id0 = x_train[i,0]
             id1 = x_train[i,1]
             id2 = x_train[i,2]
-            we_lookup[id0,:] = we_lookup[0,:] - lr* we_grad[0,:]
-            we_lookup[id1,:] = we_lookup[1,:] - lr* we_grad[1,:]
-            we_lookup[id2,:] = we_lookup[2,:] - lr* we_grad[2,:]
+            we_lookup[id0, :] = we_lookup[id0, :] - lr* we_grad[i, 0:16]
+            we_lookup[id1, :] = we_lookup[id1, :] - lr* we_grad[i, 16:32]
+            we_lookup[id2, :] = we_lookup[id2, :] - lr* we_grad[i, 32:48]
 
     #May be we should divide gradient by no_of_words
 
@@ -282,11 +249,11 @@ def grad_calc (param, x_train, y_train, hyper_para):
     w2 = param['w2']
     b2 = param['b2']
     b1 = param['b1']
-    x = np.zeros((batch_size, vocab_size*embed_size))
+    x = np.zeros((batch_size, context_size*embed_size))
 
-    x[:, 0:16] = we_lookup[x_train[:, 0]]
-    x[:, 16:32] = we_lookup[x_train[:, 1]]
-    x[:, 32:48] = we_lookup[x_train[:, 2]]
+    x[:, 0:16] = we_lookup[x_train[:, 0].astype(int)]
+    x[:, 16:32] = we_lookup[x_train[:, 1].astype(int)]
+    x[:, 32:48] = we_lookup[x_train[:, 2].astype(int)]
 
     # #### Forward pass
     a1 = act_forward(x, w1, b1) #nx128 = nx48 * 48*128
