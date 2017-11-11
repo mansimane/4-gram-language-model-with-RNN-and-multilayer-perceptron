@@ -19,18 +19,18 @@ def main():
     indices = range(no_of_train_samples)
     random.shuffle(indices)
 
-    train_p_list = []
-    val_p_list = []
-    train_loss_list = []
-    val_loss_list = []
+    train_p_list = np.zeros((1,epochs))
+    val_p_list = np.zeros((1,epochs))
+    train_loss_list = np.zeros((1,epochs))
+    val_loss_list = np.zeros((1,epochs))
 
     start = time.time()
     print 'start time', start
-    #x_train, y_train, x_val, y_val = prepare_text_data(param)
-    x_train = load_obj('x_train')
-    y_train = np.load('obj/y_train.pkl.npy')
-    x_val = load_obj('x_val')
-    y_val = load_obj('y_val')
+    x_train, y_train, x_val, y_val = prepare_text_data(param)
+    # x_train = load_obj('x_train')
+    # y_train = np.load('obj/y_train.pkl.npy')
+    # x_val = load_obj('x_val')
+    # y_val = load_obj('y_val')
 
     for epoch in range(epochs):
          for step in range(max_iter):
@@ -51,20 +51,27 @@ def main():
          train_p, train_loss = loss_calc(param, hyper_para, x_train, y_train)
          [val_p, val_loss] = loss_calc(param, hyper_para, x_val, y_val)
 
-         train_p_list.append(train_p)
-         train_loss_list.append(train_loss)
-         val_p_list.append(val_p)
-         val_loss_list.append(val_loss)
+         train_p_list[0, epoch] =train_p
+         train_loss_list[0, epoch] = train_loss
+         val_p_list[0, epoch] = val_p
+         val_loss_list[0, epoch] = val_loss
          print 'epoch', epoch, '\ttime', time.clock(), '\tTrain loss', train_loss, '\t Val_loss', val_loss, 'Train Per',train_p, 'Val Per', val_p
-         if epoch == 100:
-             date = time.strftime("%Y-%m-%d_%H_%M")
-             save_obj([train_p,train_loss,val_p,val_loss],'results'+ date)
-    plot_loss_train_valid(train_p_list, val_p_list,train_loss_list,val_loss_list,  hyper_para)
-    np.save(param['w2'], '../weigth2_mac')
-    np.save(param['b2'], '../bias')
-    np.save(param['b2'], '../weigth2_mac')
-    np.save(param['w1'], '../w1')
-    np.save(param['x1'],'../results/')
+         #if epoch == 100:
+
+    a =  'bs_' + str(hyper_para['batch_size'])
+    b = '_lr_' + str(hyper_para['learning_rate'])
+    c = '_hl_ ' + str(hyper_para['hidden_layer_size'])
+    d = '_ev_' + str(hyper_para['embed_size'])
+    e = '_ep_' + str(hyper_para['epochs'])
+    date = time.strftime("%Y-%m-%d_%H_%M")
+    save_obj([train_p,train_loss,val_p,val_loss],'results_'+a+b+c+d+e)
+    np.save('obj/w2'+a+b+c+d+e, param['w2'] )
+    np.save( 'obj/b2'+a+b+c+d+e , param['b2'])
+    np.save('obj/b1'+a+b+c+d+e, param['b1'])
+    np.save('obj/w1'+a+b+c+d+e, param['w1'] )
+    np.save('obj/we'+a+b+c+d+e, param['we_lookup'])
+
+    plot_loss_train_valid(train_p_list, val_p_list, train_loss_list, val_loss_list,  hyper_para)
 
 if __name__ == '__main__':
     main()

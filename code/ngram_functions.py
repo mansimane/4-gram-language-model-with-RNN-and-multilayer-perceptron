@@ -182,9 +182,7 @@ def loss_calc(param, hyper_para, data_x, data_y):
     loss_arr = -np.log(prod[prod!=0])
     loss = np.sum(loss_arr)/loss_arr.shape[0]
 
-
-    per_arr = np.power(2.71, loss_arr) #*** 2.7 for natural log
-    per = np.sum(per_arr)/loss_arr.shape[0]
+    per = np.power(2.71, loss) #*** 2.7 for natural log
     return per, loss
 
 
