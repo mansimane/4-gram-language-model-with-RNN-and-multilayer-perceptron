@@ -216,13 +216,22 @@ def update_param (param, param_grad, x_train, hyper_parameters):
 
 
     #****Use vectorized implementation
-    for i in range(we_grad.shape[0]):
-            id0 = x_train[i,0]
-            id1 = x_train[i,1]
-            id2 = x_train[i,2]
-            we_lookup[id0, :] = we_lookup[id0, :] - lr* we_grad[i, 0:16]
-            we_lookup[id1, :] = we_lookup[id1, :] - lr* we_grad[i, 16:32]
-            we_lookup[id2, :] = we_lookup[id2, :] - lr* we_grad[i, 32:48]
+    # for i in range(we_grad.shape[0]):
+    #         id0 = x_train[i,0]
+    #         id1 = x_train[i,1]
+    #         id2 = x_train[i,2]
+    #         we_lookup[id0, :] = we_lookup[id0, :] - lr* we_grad[i, 0:16]
+    #         we_lookup[id1, :] = we_lookup[id1, :] - lr* we_grad[i, 16:32]
+    #         we_lookup[id2, :] = we_lookup[id2, :] - lr* we_grad[i, 32:48]
+    id0 = x_train[:, 0]
+    id1 = x_train[:, 1]
+    id2 = x_train[:, 2]
+    id0 = id0.astype(int)
+    id1 = id1.astype(int)
+    id2 = id2.astype(int)
+    we_lookup[id0, :] = we_lookup[id0, :] - lr * we_grad[:, 0:16]
+    we_lookup[id1, :] = we_lookup[id1, :] - lr * we_grad[:, 16:32]
+    we_lookup[id2, :] = we_lookup[id2, :] - lr * we_grad[:, 32:48]
 
     #May be we should divide gradient by no_of_words
 

@@ -44,7 +44,7 @@ def main():
             idx = indices[start_idx: end_idx]
 
             param_grad = grad_calc(param, x_train[idx, :], y_train[idx], hyper_para)
-            param = update_param(param, param_grad, x_train, hyper_para)
+            param = update_param(param, param_grad, x_train[idx, :], hyper_para)
 
 
 
