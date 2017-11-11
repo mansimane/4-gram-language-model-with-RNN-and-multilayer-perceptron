@@ -166,9 +166,9 @@ def loss_calc(param, hyper_para, data_x, data_y):
 
     x = np.zeros((no_of_samples, context_size * embed_size))
 
-    x[:, 0:16] = we_lookup[data_x[:, 0].astype(int)]
-    x[:, 16:32] = we_lookup[data_x[:, 1].astype(int)]
-    x[:, 32:48] = we_lookup[data_x[:, 2].astype(int)]
+    x[:, 0:embed_size] = we_lookup[data_x[:, 0].astype(int)]
+    x[:, embed_size:embed_size*2] = we_lookup[data_x[:, 1].astype(int)]
+    x[:, embed_size*2:embed_size*3] = we_lookup[data_x[:, 2].astype(int)]
 
     # #### Forward pass
     a1 = act_forward(x, w1, b1) #nx128 = nx48 * 48*128
@@ -205,6 +205,7 @@ def update_param (param, param_grad, x_train, hyper_parameters):
     batch_size = hyper_parameters['batch_size']
     lr = hyper_parameters['learning_rate']
     embed_size = hyper_parameters['embed_size']
+    context_size = hyper_parameters['context_size']
 
     #sum and divide gradient
     w2 = w2 - (lr * (w2_grad/batch_size))
@@ -227,9 +228,9 @@ def update_param (param, param_grad, x_train, hyper_parameters):
     id0 = id0.astype(int)
     id1 = id1.astype(int)
     id2 = id2.astype(int)
-    we_lookup[id0, :] = we_lookup[id0, :] - lr * we_grad[:, 0:16]
-    we_lookup[id1, :] = we_lookup[id1, :] - lr * we_grad[:, 16:32]
-    we_lookup[id2, :] = we_lookup[id2, :] - lr * we_grad[:, 32:48]
+    we_lookup[id0, :] = we_lookup[id0, :] - lr * we_grad[:, 0:embed_size]
+    we_lookup[id1, :] = we_lookup[id1, :] - lr * we_grad[:, embed_size:embed_size*2]
+    we_lookup[id2, :] = we_lookup[id2, :] - lr * we_grad[:, embed_size*2:embed_size*3]
 
     #May be we should divide gradient by no_of_words
 
@@ -259,9 +260,9 @@ def grad_calc (param, x_train, y_train, hyper_para):
     b1 = param['b1']
     x = np.zeros((batch_size, context_size*embed_size))
 
-    x[:, 0:16] = we_lookup[x_train[:, 0].astype(int)]
-    x[:, 16:32] = we_lookup[x_train[:, 1].astype(int)]
-    x[:, 32:48] = we_lookup[x_train[:, 2].astype(int)]
+    x[:, 0:embed_size] = we_lookup[x_train[:, 0].astype(int)]
+    x[:, embed_size:embed_size*2] = we_lookup[x_train[:, 1].astype(int)]
+    x[:, embed_size*2:embed_size*3] = we_lookup[x_train[:, 2].astype(int)]
 
     # #### Forward pass
     a1 = act_forward(x, w1, b1) #nx128 = nx48 * 48*128

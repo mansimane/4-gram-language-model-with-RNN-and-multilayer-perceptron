@@ -14,7 +14,7 @@ def process (proc_file_name, p,total_ngrams_in_data):
 
 
     x_train = np.zeros((total_ngrams_in_data, context_size))
-    y_train = np.zeros((total_ngrams_in_data, vocab_size))
+    y_train = np.zeros((total_ngrams_in_data,1))
     x = np.zeros((1, context_size))
     vocab_dict = p['vocab_dict']
     line_no = 0
@@ -33,13 +33,13 @@ def process (proc_file_name, p,total_ngrams_in_data):
                 idxy = vocab_dict[ngram_list[3]]
 
                 #x_train = np.append(x_train, x, axis=0)
-                x_train[ngram_cnt ,:] =  x
+                x_train[ngram_cnt ,:] = x
 
                 # Create output vector
                 # y = np.zeros((1, vocab_size))
                 # y[0, idxy] = 1
                 # y_train = np.append(y_train, y, axis=0)
-                y_train[ngram_cnt ,idxy] = 1
+                y_train[ngram_cnt,0] = idxy
                 ngram_cnt += 1
             line_no += 1
             print line_no
