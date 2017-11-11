@@ -56,8 +56,15 @@ def main():
          val_p_list.append(val_p)
          val_loss_list.append(val_loss)
          print 'epoch', epoch, '\ttime', time.clock(), '\tTrain loss', train_loss, '\t Val_loss', val_loss
+         if epoch == 100:
+             date = time.strftime("%Y-%m-%d_%H_%M")
+             save_obj([train_p,train_loss,val_p,val_loss],'results'+ date)
     plot_loss_train_valid(train_p_list, val_p_list,train_loss_list,val_loss_list,  hyper_para)
-
+    np.save(param['w2'], '../weigth2_mac')
+    np.save(param['b2'], '../bias')
+    np.save(param['b2'], '../weigth2_mac')
+    np.save(param['w1'], '../w1')
+    np.save(param['x1'],'../results/')
 
 if __name__ == '__main__':
     main()
