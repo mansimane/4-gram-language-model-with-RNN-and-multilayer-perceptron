@@ -27,20 +27,23 @@ def main():
     start = time.time()
     print 'start time', start
     x_train, y_train, x_val, y_val = prepare_text_data(param)
-    print 'time taken to prepare text', time.time - start
-    for epoch in range(epochs):
-        for step in range(max_iter):
-            # get mini-batch and
-            start_idx = step * batch_size % no_of_train_samples
-            end_idx = (step + 1) * batch_size % no_of_train_samples
 
-            if start_idx > end_idx:
-                random.shuffle(indices)
-                continue
-            idx = indices[start_idx: end_idx]
 
-            param_grad = grad_calc(param, x_train[idx, :], y_train[idx])
-    #        param = update_param(param, param_grad, hyper_para)
+
+
+    # for epoch in range(epochs):
+    #      for step in range(max_iter):
+    #          # get mini-batch and
+    #         start_idx = step * batch_size % no_of_train_samples
+    #         end_idx = (step + 1) * batch_size % no_of_train_samples
+    #
+    #         if start_idx > end_idx:
+    #             random.shuffle(indices)
+    #             continue
+    #         idx = indices[start_idx: end_idx]
+    #
+    #         param_grad = grad_calc(param, x_train[idx, :], y_train[idx])
+    #         param = update_param(param, param_grad, x_train, hyper_para)
     #    [train_p, val_p, train_loss, val_loss] = loss_calc(param, hyper_para, x_train, y_train, x_val, y_val)
     #         #Until and unless obj is modified by function, it is pass by reference
     #         #We don't modify train_data in get_word_vec function hence it is pass by reference
@@ -63,7 +66,7 @@ def main():
     #         val_p_list.append(val_p)
     #         val_loss_list.append(val_loss)
     #         print 'epoch', epoch, 'Train loss', train_loss, 'Val_loss', val_loss
-    plot_loss_train_valid(train_p_list, val_p_list,train_loss_list,val_loss_list,  hyper_para)
+    #plot_loss_train_valid(train_p_list, val_p_list,train_loss_list,val_loss_list,  hyper_para)
 
 
 if __name__ == '__main__':

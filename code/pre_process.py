@@ -44,6 +44,7 @@ def process_line(line, vocab, vocab_len, fd_out, text_file_name):
     else:
         words = line.split()
         #        for w in words:
+        vocab = load_obj('vocab')
         for i in range(len(words)):
             # in vocab, increase count
             if words[i] not in vocab:
@@ -85,7 +86,8 @@ def main():
 
     fd_out.close()
     assert os.path.exists(cur_path + '/obj/'), ('obj directory does not exist')
-    save_obj(vocab, 'vocab')
+    if text_file_name == 'train':
+        save_obj(vocab, 'vocab')
     #print vocab
 
 

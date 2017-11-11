@@ -25,6 +25,8 @@ hyper_para['c_init_sig'] = 0.1 # mean and standard deviation
 # train and test files
 hyper_para['proc_train_file_name'] = '../data/train_with_tags.txt'
 hyper_para['proc_val_file_name'] = '../data/val_with_tags.txt'
+# hyper_para['proc_train_file_name'] = '../data/train_small.txt'
+# hyper_para['proc_val_file_name'] = '../data/val_small.txt'
 
 #Not a hyperpara, but just to make evident that it came from here
 hyper_para['total_ngrams_in_tr_data'] = 86402
