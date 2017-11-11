@@ -214,6 +214,7 @@ def update_param (param, param_grad, x_train, hyper_parameters):
     b2 = b2 - (lr * (b2_grad/batch_size))
     b1 = b1 - (lr * (b1_grad/batch_size))
 
+
     #****Use vectorized implementation
     for i in range(we_grad.shape[0]):
             id0 = x_train[i,0]
