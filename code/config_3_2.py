@@ -1,5 +1,5 @@
 hyper_para = {}
-hyper_para['epochs'] = 2
+hyper_para['epochs'] = 4
 
 hyper_para['batch_size'] = 256
 
@@ -13,14 +13,14 @@ hyper_para['vocab_size'] = 8000   # size of vocabulary
 
 hyper_para['no_of_grams'] = 4
 
-hyper_para['learning_rate'] = 0.01
+hyper_para['learning_rate'] = 0.05
 hyper_para['context_size'] = hyper_para['no_of_grams'] - 1
 
 hyper_para['w_init_mu'] = 0
-hyper_para['w_init_sig'] = 0.1 # mean and standard deviation
+hyper_para['w_init_sig'] = 0.01 # mean and standard deviation
 
 hyper_para['c_init_mu'] = 0
-hyper_para['c_init_sig'] = 0.1 # mean and standard deviation
+hyper_para['c_init_sig'] = 0.05 # mean and standard deviation
 
 # train and test files
 hyper_para['proc_train_file_name'] = '../data/train_with_tags.txt'

@@ -70,6 +70,7 @@ def main():
     np.save('obj/b1'+a+b+c+d+e, param['b1'])
     np.save('obj/w1'+a+b+c+d+e, param['w1'] )
     np.save('obj/we'+a+b+c+d+e, param['we_lookup'])
+    np.save('obj/we_map'+a+b+c+d+e, param['vocab_dict'])
 
     plot_loss_train_valid(train_p_list, val_p_list, train_loss_list, val_loss_list,  hyper_para)
 
