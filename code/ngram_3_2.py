@@ -20,17 +20,16 @@ def main():
     random.shuffle(indices)
 
     train_p_list = np.zeros((1,epochs))
-    val_p_list = np.zeros((1,epochs))
     train_loss_list = np.zeros((1,epochs))
-    val_loss_list = np.zeros((1,epochs))
+    #train_acc_list = np.zeros((1,epochs))
+
+    val_loss_list = np.zeros((1, epochs))
+    val_p_list = np.zeros((1, epochs))
+    #val_acc_list = np.zeros((1, epochs))
 
     start = time.time()
     print 'start time', start
     x_train, y_train, x_val, y_val = prepare_text_data(param)
-    # x_train = load_obj('x_train')
-    # y_train = np.load('obj/y_train.pkl.npy')
-    # x_val = load_obj('x_val')
-    # y_val = load_obj('y_val')
 
     for epoch in range(epochs):
          for step in range(max_iter):
@@ -49,13 +48,17 @@ def main():
 
 
          train_p, train_loss = loss_calc(param, hyper_para, x_train, y_train)
-         [val_p, val_loss] = loss_calc(param, hyper_para, x_val, y_val)
+         val_p, val_loss = loss_calc(param, hyper_para, x_val, y_val)
 
          train_p_list[0, epoch] =train_p
          train_loss_list[0, epoch] = train_loss
+#         train_acc_list[0, epoch] = train_acc
+
          val_p_list[0, epoch] = val_p
          val_loss_list[0, epoch] = val_loss
-         print 'epoch', epoch, '\ttime', time.clock(), '\tTrain loss', train_loss, '\t Val_loss', val_loss, 'Train Per',train_p, 'Val Per', val_p
+#         val_acc_list[0, epoch] = val_acc
+
+         print 'epoch', epoch, '\ttime', time.clock(), '\tTrain loss', train_loss, '\t Val_loss', val_loss,  '\tTrain Per',train_p, 'Val Per', val_p
          #if epoch == 100:
 
     a =  'bs_' + str(hyper_para['batch_size'])
@@ -65,14 +68,19 @@ def main():
     e = '_ep_' + str(hyper_para['epochs'])
     date = time.strftime("%Y-%m-%d_%H_%M")
     save_obj([train_p,train_loss,val_p,val_loss],a+b+c+d+e+'results_')
-    np.save(a+b+c+d+e+'obj/w2', param['w2'] )
-    np.save( a+b+c+d+e+'obj/b2' , param['b2'])
-    np.save(a+b+c+d+e+'obj/b1', param['b1'])
-    np.save(a+b+c+d+e+'obj/w1', param['w1'] )
-    np.save(a+b+c+d+e+'obj/we', param['we_lookup'])
-    np.save(a+b+c+d+e+'obj/we_map', param['vocab_dict'])
+    if os.path.exists('../results/'+a+b+c+d+e):
+        print '../results/'+a+b+c+d+e ,'\texists'
+    else:
+        os.mkdir('../results/'+a+b+c+d+e)
+    np.save('../results/'+a+b+c+d+e+'/w2', param['w2'] )
+    np.save('../results/'+ a+b+c+d+e+'/b2' , param['b2'])
+    np.save('../results/'+a+b+c+d+e+'/b1', param['b1'])
+    np.save('../results/'+a+b+c+d+e+'/w1', param['w1'] )
+    np.save('../results/'+a+b+c+d+e+'/we', param['we_lookup'])
+    np.save('../results/'+a+b+c+d+e+'/we_map', param['vocab_dict'])
 
     plot_loss_train_valid(train_p_list, val_p_list, train_loss_list, val_loss_list,  hyper_para)
 
+    #plot_acc_train_valid(train_acc_list, val_acc_list, hyper_para)
 if __name__ == '__main__':
     main()

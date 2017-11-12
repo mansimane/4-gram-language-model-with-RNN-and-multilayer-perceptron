@@ -52,105 +52,6 @@ def initialize_weights(hyper_para):
     param['b2'] = b2
     return param
 
-def get_word_vec(train_data, hyper_para, param):
-    we_lookup, w1, w2, b1, b2 = param
-    vocab_size = hyper_para['vocab_size']
-    context_size = hyper_para['context_size']
-    embed_size = hyper_para['embed_size']
-    if not hasattr(get_word_vec, "line_idx"):
-        get_word_vec.line_idx = 0
-    if not hasattr(get_word_vec, "line_no"):
-        get_word_vec.line_no = 0
-    if not hasattr(get_word_vec, "max_line_no"):
-        get_word_vec.max_line_no = len(train_data)
-    #print 'get_word_vec.line_no', get_word_vec.line_no
-
-    x_batch = np.zeros((0, embed_size* context_size))
-    y_batch = np.zeros((0, vocab_size))
-    ngram_list_batch = []
-    while (x_batch.shape[0] != hyper_para['batch_size']):
-        line = train_data[get_word_vec.line_no]
-        words = line.split()
-        # Loop over lines
-        for i in range(get_word_vec.line_idx, len(words)-3):
-            ngram_list = words[i: i+ hyper_para['no_of_grams']]
-            ngram_list_batch.append(ngram_list)
-            #Create vector from ngrams
-            x = np.zeros((0, embed_size))
-            for j in range(0, context_size):
-                x = np.append(x, we_lookup[ngram_list[j]][1])
-            x = np.reshape(x, (1, embed_size * context_size))
-            x_batch = np.append(x_batch, x, axis=0 )
-
-            #Create output vector
-            y = np.zeros((1, vocab_size))
-            y[0, we_lookup[ngram_list[context_size]][0]] = 1
-            y_batch = np.append(y_batch, y, axis=0)
-            get_word_vec.line_idx += 1
-            if x_batch.shape[0] == hyper_para['batch_size']:
-                return ngram_list_batch, x_batch, y_batch
-
-        get_word_vec.line_idx = 0
-        get_word_vec.line_no += 1
-
-        #End of file, batch size can be smaller than programmed on for last one
-        if get_word_vec.line_no == get_word_vec.max_line_no:
-            get_word_vec.line_idx = 0
-            get_word_vec.line_no = 0
-            return ngram_list_batch, x_batch, y_batch
-
-    return ngram_list_batch, x_batch, y_batch
-
-def get_word_vec_val(val_data, hyper_para, param):
-    we_lookup, w1, w2, b1, b2 = param
-    vocab_size = hyper_para['vocab_size']
-    context_size = hyper_para['context_size']
-    embed_size = hyper_para['embed_size']
-
-    if not hasattr(get_word_vec_val, "line_idx"):
-        get_word_vec_val.line_idx = 0
-    if not hasattr(get_word_vec_val, "line_no"):
-        get_word_vec_val.line_no = 0
-    if not hasattr(get_word_vec_val, "max_line_no"):
-        get_word_vec_val.max_line_no = len(val_data)
-    #print 'get_word_vec.line_no', get_word_vec.line_no
-
-    x_batch = np.zeros((0, embed_size* context_size))
-    y_batch = np.zeros((0, vocab_size))
-    ngram_list_batch = []
-    while (x_batch.shape[0] != hyper_para['batch_size']):
-        line = val_data[get_word_vec_val.line_no]
-        words = line.split()
-        # Loop over lines
-        for i in range(get_word_vec_val.line_idx, len(words)-3):
-            ngram_list = words[i: i+ hyper_para['no_of_grams']]
-            ngram_list_batch.append(ngram_list)
-            #Create vector from ngrams
-            x = np.zeros((0, embed_size))
-            for j in range(0, context_size):
-                x = np.append(x, we_lookup[ngram_list[j]][1])
-            x = np.reshape(x, (1, embed_size * context_size))
-            x_batch = np.append(x_batch, x, axis=0 )
-
-            #Create output vector
-            y = np.zeros((1, vocab_size))
-            y[0, we_lookup[ngram_list[context_size]][0]] = 1
-            y_batch = np.append(y_batch, y, axis=0)
-            get_word_vec_val.line_idx += 1
-            if x_batch.shape[0] == hyper_para['batch_size']:
-                return ngram_list_batch, x_batch, y_batch
-
-        get_word_vec_val.line_idx = 0
-        get_word_vec_val.line_no += 1
-
-        #End of file, batch size can be smaller than programmed on for last one
-        if get_word_vec_val.line_no == get_word_vec_val.max_line_no:
-            get_word_vec_val.line_idx = 0
-            get_word_vec_val.line_no = 0
-            return ngram_list_batch, x_batch, y_batch
-
-    return ngram_list_batch, x_batch, y_batch
-
 
 def loss_calc(param, hyper_para, data_x, data_y):
     we_lookup = param['we_lookup']
@@ -177,9 +78,13 @@ def loss_calc(param, hyper_para, data_x, data_y):
 
     y_pred = softmax_forward(a2)
 
+#    y_pred_idx = y_pred.argmax(axis=1)
+
+#    per_err = len(np.where(y_pred_idx !=data_y)[0])/float(len(data_y))
+
     #Forward pass
-    prod = np.multiply(y_pred, data_y)
-    loss_arr = -np.log(prod[prod!=0])
+    prod = y_pred[np.arange(len(y_pred)), data_y.astype(int)]
+    loss_arr = -np.log(prod)
     loss = np.sum(loss_arr)/loss_arr.shape[0]
 
     per = np.power(2.7, loss) #*** 2.7 for natural log
@@ -272,9 +177,15 @@ def grad_calc (param, x_train, y_train, hyper_para):
     y_pred = softmax_forward(a2)
 
     ####### Backward Pass
-    d3 = softmax_back(y_pred, y_train)  # nx8000
+    #d3 = softmax_back(y_pred, y_train)  # nx8000    #y_pred - y_correct
 
-    [w2_grad, b2_grad, d2] = act_back(a1, a2, d3, w2, b2)
+    #y_pred_cor_cls = y_pred[np.arange(len(y_pred)), y_train.astype(int)]
+
+    y_pred[np.arange(len(y_pred)), y_train.astype(int)] = y_pred[np.arange(len(y_pred)), y_train.astype(int)] - 1
+
+
+
+    [w2_grad, b2_grad, d2] = act_back(a1, a2, y_pred, w2, b2)
 
     [w1_grad, b1_grad, d1] = act_back(x, a1, d2, w1, b1)
 
@@ -283,3 +194,32 @@ def grad_calc (param, x_train, y_train, hyper_para):
 
     return param_grad
 
+def predict_word(data_x, param, hyper_para):
+    we_lookup = param['we_lookup']
+    w1 = param['w1']
+    w2 = param['w2']
+    b2 = param['b2']
+    b1 = param['b1']
+    vocab_dict = param['vocab_dict']
+    vocab_dict_inv = param['vocab_dict_inv']
+
+    context_size = hyper_para['context_size']
+    embed_size = hyper_para['embed_size']
+    vocab_size = hyper_para['vocab_size']
+
+    x = np.zeros((1, context_size * embed_size))
+
+    x[:, 0:embed_size] = we_lookup[data_x[0].astype(int)]
+    x[:, embed_size:embed_size * 2] = we_lookup[data_x[1].astype(int)]
+    x[:, embed_size * 2:embed_size * 3] = we_lookup[data_x[2].astype(int)]
+
+    # #### Forward pass
+    a1 = act_forward(x, w1, b1)  # nx128 = nx48 * 48*128
+
+    a2 = act_forward(a1, w2, b2)  # nx100 = nx128 * 128x8000
+
+    y_pred = softmax_forward(a2)
+
+    y_pred_idx = y_pred.argmax(axis=1) #return type is array
+
+    return vocab_dict_inv[y_pred_idx[0]]
