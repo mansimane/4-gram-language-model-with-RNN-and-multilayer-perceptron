@@ -26,7 +26,8 @@ def main():
     val_loss_list = np.zeros((1, epochs))
     val_p_list = np.zeros((1, epochs))
     #val_acc_list = np.zeros((1, epochs))
-
+    print  hyper_para
+    print 'Reading data'
     start = time.time()
     print 'Starting time', start
     x_train, y_train, x_val, y_val = prepare_text_data(param)
