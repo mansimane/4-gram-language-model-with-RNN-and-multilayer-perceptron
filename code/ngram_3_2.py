@@ -28,7 +28,7 @@ def main():
     #val_acc_list = np.zeros((1, epochs))
 
     start = time.time()
-    print 'start time', start
+    print 'Starting time', start
     x_train, y_train, x_val, y_val = prepare_text_data(param)
 
     for epoch in range(epochs):

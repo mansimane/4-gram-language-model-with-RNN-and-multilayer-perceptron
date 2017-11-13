@@ -21,8 +21,8 @@ max_vocab_len = hyper_para['vocab_size']
 def process_line(line, vocab, vocab_len, fd_out, text_file_name):
     line = line.lower()
     line = line.replace('\n', '')
-    line = line.replace(',', '')
-    line = line.replace('.', '')
+#    line = line.replace(',', '')
+#    line = line.replace('.', '')
     line = 'START ' + line + ' END'
     # train file check
     if text_file_name == 'train':

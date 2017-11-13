@@ -52,7 +52,6 @@ def initialize_weights(hyper_para):
     param['b2'] = b2
     return param
 
-
 def loss_calc(param, hyper_para, data_x, data_y):
     we_lookup = param['we_lookup']
     w1 = param['w1']
@@ -111,13 +110,13 @@ def update_param (param, param_grad, x_train, hyper_parameters):
     lr = hyper_parameters['learning_rate']
     embed_size = hyper_parameters['embed_size']
     context_size = hyper_parameters['context_size']
+    decay = hyper_parameters['decay']
 
     #sum and divide gradient
     w2 = w2 - (lr * (w2_grad/batch_size))
     w1 = w1 - (lr * (w1_grad/batch_size))
     b2 = b2 - (lr * (b2_grad/batch_size))
     b1 = b1 - (lr * (b1_grad/batch_size))
-
 
     #****Use vectorized implementation
     # for i in range(we_grad.shape[0]):
@@ -133,9 +132,9 @@ def update_param (param, param_grad, x_train, hyper_parameters):
     id0 = id0.astype(int)
     id1 = id1.astype(int)
     id2 = id2.astype(int)
-    we_lookup[id0, :] = we_lookup[id0, :] - lr * we_grad[:, 0:embed_size]
-    we_lookup[id1, :] = we_lookup[id1, :] - lr * we_grad[:, embed_size:embed_size*2]
-    we_lookup[id2, :] = we_lookup[id2, :] - lr * we_grad[:, embed_size*2:embed_size*3]
+    we_lookup[id0, :] = we_lookup[id0, :] - lr * we_grad[:, 0:embed_size] - (decay * we_lookup[id0, :])
+    we_lookup[id1, :] = we_lookup[id1, :] - lr * we_grad[:, embed_size:embed_size*2] - (decay * we_lookup[id1, :])
+    we_lookup[id2, :] = we_lookup[id2, :] - lr * we_grad[:, embed_size*2:embed_size*3] - (decay * we_lookup[id2, :])
 
     #May be we should divide gradient by no_of_words
 
@@ -183,8 +182,6 @@ def grad_calc (param, x_train, y_train, hyper_para):
 
     y_pred[np.arange(len(y_pred)), y_train.astype(int)] = y_pred[np.arange(len(y_pred)), y_train.astype(int)] - 1
 
-
-
     [w2_grad, b2_grad, d2] = act_back(a1, a2, y_pred, w2, b2)
 
     [w1_grad, b1_grad, d1] = act_back(x, a1, d2, w1, b1)
@@ -194,7 +191,58 @@ def grad_calc (param, x_train, y_train, hyper_para):
 
     return param_grad
 
+def grad_calc_with_tanh (param, x_train, y_train, hyper_para):
+    '''
+    :param param:
+    :param x: Embedding vecotrs for 3 context words, 1x48
+    :param hyper_para:
+    :return:
+    '''
+    context_size = hyper_para['context_size']
+    vocab_size = hyper_para['vocab_size']
+    batch_size = hyper_para['batch_size']
+    embed_size = hyper_para['embed_size']
+
+    we_lookup = param['we_lookup']
+    w1 = param['w1']
+    w2 = param['w2']
+    b2 = param['b2']
+    b1 = param['b1']
+    x = np.zeros((batch_size, context_size*embed_size))
+
+    x[:, 0:embed_size] = we_lookup[x_train[:, 0].astype(int)]
+    x[:, embed_size:embed_size*2] = we_lookup[x_train[:, 1].astype(int)]
+    x[:, embed_size*2:embed_size*3] = we_lookup[x_train[:, 2].astype(int)]
+
+    # #### Forward pass
+    a1 = act_forward(x, w1, b1) #nx128 = nx48 * 48*128
+
+    h1 = tanh_forward(a1) #nx128
+
+    a2 = act_forward(h1, w2, b2)    #nx100 = nx128 * 128x8000
+
+    y_pred = softmax_forward(a2)
+    ####### Backward Pass
+    #d3 = softmax_back(y_pred, y_train)  # nx8000    #y_pred - y_correct
+
+    #y_pred_cor_cls = y_pred[np.arange(len(y_pred)), y_train.astype(int)]
+
+    y_pred[np.arange(len(y_pred)), y_train.astype(int)] = y_pred[np.arange(len(y_pred)), y_train.astype(int)] - 1
+
+    [w2_grad, b2_grad, d3] = act_back(a1, a2, y_pred, w2, b2)
+
+    d2 = tanh_back(a1, h1, d3)
+
+    [w1_grad, b1_grad, d1] = act_back(x, a1, d2, w1, b1)
+
+    we_grad = d1
+    param_grad = (we_grad, w1_grad, w2_grad, b1_grad, b2_grad)
+
+    return param_grad
+
 def predict_word(data_x, param, hyper_para):
+    #With or without tanh***
+
     we_lookup = param['we_lookup']
     w1 = param['w1']
     w2 = param['w2']

@@ -1,4 +1,6 @@
-hyper_para = {}
+ #bs_256_lr_0.01_hl_ 128_ev_16_ep_100
+[218.47193562909629, 5.4232549204559524, 197.88215182588294, 5.3235964982704047]
+
 hyper_para['epochs'] = 100
 
 hyper_para['batch_size'] = 256
@@ -22,12 +24,10 @@ hyper_para['w_init_sig'] = 0.01 # mean and standard deviation
 hyper_para['c_init_mu'] = 0
 hyper_para['c_init_sig'] = 0.05 # mean and standard deviation
 
-# train and test files
-hyper_para['proc_train_file_name'] = '../data/train_with_tags.txt'
-hyper_para['proc_val_file_name'] = '../data/val_with_tags.txt'
-# hyper_para['proc_train_file_name'] = '../data/train_small.txt'
-# hyper_para['proc_val_file_name'] = '../data/val_small.txt'
+########Results
 
-#Not a hyperpara, but just to make evident that it came from here
-hyper_para['total_ngrams_in_tr_data'] = 86402
-hyper_para['total_ngrams_in_val_data'] = 10360
+
+
+
+
+

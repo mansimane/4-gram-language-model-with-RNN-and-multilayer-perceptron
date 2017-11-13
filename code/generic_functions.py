@@ -41,6 +41,12 @@ def act_forward(input, w, b):
     a = input.dot(w) + b
     return a
 
+def tanh_forward(z):
+    return np.tanh(z)
+
+def tanh_back(input, output, grad_prev):
+    grad_next = grad_prev * (1 - np.power(output, 2))
+    return grad_next
 
 def act_back(input, output, grad_prev, w, b):
     """ Args:

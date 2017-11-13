@@ -9,19 +9,29 @@ def main():
     x_map = np.zeros((5,3))
 
     setting = 'bs_256_lr_0.04_hl_128_ev_2_ep_2'
-    w1 = np.load('../results/' + setting + '/w1.npy')
+    # w1 = np.load('../results/' + setting + '/w1.npy')
+    #
+    # w2 = np.load('../results/' + setting + '/w2.npy')
+    #
+    # we_lookup = np.load('../results/' + setting + '/we.npy')
+    #
+    # b1 = np.load('../results/' + setting + '/b1.npy')
+    #
+    # b2 = np.load('../results/' + setting + '/b2.npy')
+    #vocab_dict = np.load('../results/' + setting + '/we_map.npy')
+    w1 = np.load('obj/w1bs_256_lr_0.01_hl_ 128_ev_16_ep_100.npy')
 
-    w2 = np.load('../results/' + setting + '/w2.npy')
+    w2 = np.load('obj/w2bs_256_lr_0.01_hl_ 128_ev_16_ep_100.npy')
 
-    we_lookup = np.load('../results/' + setting + '/we.npy')
+    b1 = np.load('obj/b1bs_256_lr_0.01_hl_ 128_ev_16_ep_100.npy')
 
-    b1 = np.load('../results/' + setting + '/b1.npy')
+    b2 = np.load('obj/b2bs_256_lr_0.01_hl_ 128_ev_16_ep_100.npy')
 
-    b2 = np.load('../results/' + setting + '/b2.npy')
+    we_lookup = np.load('obj/webs_256_lr_0.01_hl_ 128_ev_16_ep_100.npy')
 
-    vocab_dict = np.load('../results/' + setting + '/we_map.npy')
+    vocab_dict = np.load('obj/we_mapbs_256_lr_0.01_hl_ 128_ev_16_ep_100.npy')
     vocab_dict = vocab_dict.item()
-    vocab_dict_inv = {y:x for x,y in vocab_dict.iteritems()}
+    vocab_dict_inv = {y:x for x, y in vocab_dict.iteritems()}
 
     #vocab = load_obj('vocab')
     param = {}

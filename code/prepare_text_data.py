@@ -42,7 +42,7 @@ def process (proc_file_name, p,total_ngrams_in_data):
                 y_train[ngram_cnt] = idxy
                 ngram_cnt += 1
             line_no += 1
-            print line_no
+            #print line_no
     return x_train, y_train
 
 def prepare_text_data(param):
