@@ -13,7 +13,7 @@ hyper_para['vocab_size'] = 8000   # size of vocabulary
 
 hyper_para['no_of_grams'] = 4
 
-hyper_para['learning_rate'] = 0.8
+hyper_para['learning_rate'] = 0.07
 hyper_para['context_size'] = hyper_para['no_of_grams'] - 1
 
 hyper_para['w_init_mu'] = 0

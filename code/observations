@@ -19,7 +19,7 @@ hyper_para['vocab_size'] = 8000   # size of vocabulary
 
 hyper_para['no_of_grams'] = 4
 
-hyper_para['learning_rate'] = 0.8
+hyper_para['learning_rate'] = 0.07
 hyper_para['context_size'] = hyper_para['no_of_grams'] - 1
 
 hyper_para['w_init_mu'] = 0
@@ -37,8 +37,6 @@ hyper_para['proc_val_file_name'] = '../data/val_with_tags.txt'
 #Not a hyperpara, but just to make evident that it came from here
 hyper_para['total_ngrams_in_tr_data'] = 86402
 hyper_para['total_ngrams_in_val_data'] = 10360
-
-
 
 
 
