@@ -33,14 +33,24 @@ def initialize_weights(hyper_para):
     input_layer_size = hyper_para['context_size']*hyper_para['embed_size']
     hidden_layer_size = hyper_para['hidden_layer_size']
 
-    w1 = np.random.normal(mu, sigma, (input_layer_size * hidden_layer_size))
+    # w1 = np.random.normal(mu, sigma, (input_layer_size * hidden_layer_size))
+    # w1 = w1.reshape(input_layer_size, hidden_layer_size)
+    # b1 = np.random.normal(mu, sigma, (1, hidden_layer_size))
+    #
+    # #Weights for activation layer 2, 128x8000
+    # w2 = np.random.normal(mu, sigma, (hidden_layer_size * vocab_size))
+    # w2 = w2.reshape(hidden_layer_size, vocab_size)
+    # b2 = np.random.normal(mu, sigma, (1, vocab_size))
+
+    #implementing Xavier weight initialization
+    w1 = np.random.normal(mu, (2.0/(input_layer_size + hidden_layer_size)), (input_layer_size * hidden_layer_size))
     w1 = w1.reshape(input_layer_size, hidden_layer_size)
-    b1 = np.random.normal(mu, sigma, (1, hidden_layer_size))
+    b1 = np.random.normal(mu, (2.0/hidden_layer_size), (1, hidden_layer_size))
 
     #Weights for activation layer 2, 128x8000
-    w2 = np.random.normal(mu, sigma, (hidden_layer_size * vocab_size))
+    w2 = np.random.normal(mu, (2.0/ (hidden_layer_size + vocab_size)), (hidden_layer_size * vocab_size))
     w2 = w2.reshape(hidden_layer_size, vocab_size)
-    b2 = np.random.normal(mu, sigma, (1, vocab_size))
+    b2 = np.random.normal(mu, (2.0/vocab_size), (1, vocab_size))
 
     param = {}
     param['we_lookup'] = we_lookup
