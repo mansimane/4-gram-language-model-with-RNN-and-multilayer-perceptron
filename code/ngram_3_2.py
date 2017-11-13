@@ -79,6 +79,10 @@ def main():
     np.save('../results/'+a+b+c+d+e+'/w1', param['w1'] )
     np.save('../results/'+a+b+c+d+e+'/we', param['we_lookup'])
     np.save('../results/'+a+b+c+d+e+'/we_map', param['vocab_dict'])
+    np.save('../results/'+a+b+c+d+e+'/val_p_list', val_p_list)
+    np.save('../results/'+a+b+c+d+e+'/val_loss_list', val_loss_list)
+    np.save('../results/'+a+b+c+d+e+'/train_loss_list', train_loss_list)
+    np.save('../results/'+a+b+c+d+e+'/train_p_list', train_p_list)
 
     plot_loss_train_valid(train_p_list, val_p_list, train_loss_list, val_loss_list,  hyper_para)
 

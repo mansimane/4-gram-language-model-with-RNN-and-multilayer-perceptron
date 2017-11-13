@@ -281,3 +281,26 @@ def predict_word(data_x, param, hyper_para):
     y_pred_idx = y_pred.argmax(axis=1) #return type is array
 
     return vocab_dict_inv[y_pred_idx[0]]
+
+def compute_dist(words, param):
+    '''
+    Returns nearest 10 words to given word except that word
+    :param words:
+    :param param:
+    :return:
+    '''
+    we_lookup = param['we_lookup']
+    w1 = param['w1']
+    w2 = param['w2']
+    b2 = param['b2']
+    b1 = param['b1']
+    vocab_map = param['vocab_dict']
+
+    for word in words:
+        idx =  vocab_map[word]
+        vec = we_lookup[idx]
+        wr = np.linalg.norm(vec - we_lookup)
+
+    clost_lst = []
+
+    return clost_lst

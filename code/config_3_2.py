@@ -1,5 +1,5 @@
 hyper_para = {}
-hyper_para['epochs'] = 100
+hyper_para['epochs'] = 4
 
 hyper_para['batch_size'] = 512
 

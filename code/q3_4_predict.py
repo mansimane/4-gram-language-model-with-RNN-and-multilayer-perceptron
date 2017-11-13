@@ -2,6 +2,8 @@ import numpy as np
 from generic_functions import *
 from config_3_2 import *
 from ngram_functions import *
+from plotting_funs import *
+import sys
 
 def main():
     th_words = [['government', 'of', 'united'], ['city', 'of', 'new'], ['life', 'in', 'the'],
@@ -57,11 +59,14 @@ def main():
         while (next_word != 'END') and cnt < 10:
             next_word = predict_word(x_map[i,:], param, hyper_para)
             cnt = cnt + 1
-            print next_word
+            sys.stdout.write(next_word)
+            sys.stdout.write('\t')
             x_map[i,0] = x_map[i,1]
             x_map[i,1] = x_map[i,2]
             x_map[i,2] = vocab_dict[next_word]
-        print '\n\n next'
+        print '\n '
+
+    vis_embedding(param, hyper_para)
 
 if __name__ == '__main__':
     main()
