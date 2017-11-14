@@ -46,14 +46,14 @@ def main():
                 continue
             idx = indices[start_idx: end_idx]
 
-            param_grad, t_loss, t_per = grad_calc(param, x_train[idx, :], y_train[idx], hyper_para)
+            param_grad, t_loss, t_per = grad_calc_with_tanh(param, x_train[idx, :], y_train[idx], hyper_para)
             param = update_param(param, param_grad, x_train[idx, :], hyper_para)
             train_p += t_per
             train_loss += t_loss
             no_of_batches += 1
 
          #train_p, train_loss = loss_calc(param, hyper_para, x_train, y_train)
-         val_p, val_loss = loss_calc(param, hyper_para, x_val, y_val)
+         val_p, val_loss = loss_calc_tanh(param, hyper_para, x_val, y_val)
 
          train_p = train_p / float(no_of_batches)
          train_loss = train_loss / float(no_of_batches)

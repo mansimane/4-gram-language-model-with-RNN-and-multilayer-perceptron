@@ -1,5 +1,6 @@
 hyper_para = {}
-hyper_para['epochs'] = 4
+hyper_para['non_lin'] = 'tanh'   # Size of embedding vector
+hyper_para['epochs'] = 3
 
 hyper_para['batch_size'] = 512
 
@@ -13,7 +14,7 @@ hyper_para['vocab_size'] = 8000   # size of vocabulary
 
 hyper_para['no_of_grams'] = 4
 
-hyper_para['learning_rate'] = 0.07
+hyper_para['learning_rate'] = 0.005
 hyper_para['context_size'] = hyper_para['no_of_grams'] - 1
 
 hyper_para['w_init_mu'] = 0

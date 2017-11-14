@@ -189,6 +189,11 @@ def grad_calc (param, x_train, y_train, hyper_para):
     #d3 = softmax_back(y_pred, y_train)  # nx8000    #y_pred - y_correct
 
     #y_pred_cor_cls = y_pred[np.arange(len(y_pred)), y_train.astype(int)]
+    prod = y_pred[np.arange(len(y_pred)), y_train.astype(int)]
+    loss_arr = -np.log(prod)
+    loss = np.sum(loss_arr) / loss_arr.shape[0]
+
+    per = np.power(2.7, loss)  # *** 2.7 for natural log
 
     y_pred[np.arange(len(y_pred)), y_train.astype(int)] = y_pred[np.arange(len(y_pred)), y_train.astype(int)] - 1
 
@@ -199,7 +204,7 @@ def grad_calc (param, x_train, y_train, hyper_para):
     we_grad = d1
     param_grad = (we_grad, w1_grad, w2_grad, b1_grad, b2_grad)
 
-    return param_grad
+    return param_grad, loss, per
 
 def grad_calc_with_tanh (param, x_train, y_train, hyper_para):
     '''
@@ -232,6 +237,11 @@ def grad_calc_with_tanh (param, x_train, y_train, hyper_para):
     a2 = act_forward(h1, w2, b2)    #nx100 = nx128 * 128x8000
 
     y_pred = softmax_forward(a2)
+    prod = y_pred[np.arange(len(y_pred)), y_train.astype(int)]
+    loss_arr = -np.log(prod)
+    loss = np.sum(loss_arr) / loss_arr.shape[0]
+
+    per = np.power(2.7, loss)  # *** 2.7 for natural log
     ####### Backward Pass
     #d3 = softmax_back(y_pred, y_train)  # nx8000    #y_pred - y_correct
 
@@ -248,7 +258,7 @@ def grad_calc_with_tanh (param, x_train, y_train, hyper_para):
     we_grad = d1
     param_grad = (we_grad, w1_grad, w2_grad, b1_grad, b2_grad)
 
-    return param_grad
+    return param_grad, loss, per
 
 def predict_word(data_x, param, hyper_para):
     #With or without tanh***
@@ -274,13 +284,53 @@ def predict_word(data_x, param, hyper_para):
     # #### Forward pass
     a1 = act_forward(x, w1, b1)  # nx128 = nx48 * 48*128
 
-    a2 = act_forward(a1, w2, b2)  # nx100 = nx128 * 128x8000
+    h1 = tanh_forward(a1) #nx128
+
+    a2 = act_forward(h1, w2, b2)  # nx100 = nx128 * 128x8000
 
     y_pred = softmax_forward(a2)
 
     y_pred_idx = y_pred.argmax(axis=1) #return type is array
 
     return vocab_dict_inv[y_pred_idx[0]]
+
+def loss_calc_tanh(param, hyper_para, data_x, data_y):
+    we_lookup = param['we_lookup']
+    w1 = param['w1']
+    w2 = param['w2']
+    b2 = param['b2']
+    b1 = param['b1']
+
+    context_size = hyper_para['context_size']
+    embed_size = hyper_para['embed_size']
+    vocab_size = hyper_para['vocab_size']
+    no_of_samples = data_x.shape[0]
+
+    x = np.zeros((no_of_samples, context_size * embed_size))
+
+    x[:, 0:embed_size] = we_lookup[data_x[:, 0].astype(int)]
+    x[:, embed_size:embed_size*2] = we_lookup[data_x[:, 1].astype(int)]
+    x[:, embed_size*2:embed_size*3] = we_lookup[data_x[:, 2].astype(int)]
+
+    # #### Forward pass
+    a1 = act_forward(x, w1, b1) #nx128 = nx48 * 48*128
+
+    h1 = tanh_forward(a1) #nx128
+
+    a2 = act_forward(h1, w2, b2)    #nx100 = nx128 * 128x8000
+
+    y_pred = softmax_forward(a2)
+#    y_pred_idx = y_pred.argmax(axis=1)
+
+#    per_err = len(np.where(y_pred_idx !=data_y)[0])/float(len(data_y))
+
+    #Forward pass
+    prod = y_pred[np.arange(len(y_pred)), data_y.astype(int)]
+    loss_arr = -np.log(prod)
+    loss = np.sum(loss_arr)/loss_arr.shape[0]
+
+    per = np.power(2.7, loss) #*** 2.7 for natural log
+    return per, loss
 
 def compute_dist(words, param):
     '''
