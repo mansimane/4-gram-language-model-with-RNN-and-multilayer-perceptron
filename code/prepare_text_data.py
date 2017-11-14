@@ -7,14 +7,15 @@ context_size = hyper_para['context_size']
 embed_size = hyper_para['embed_size']
 vocab_size = hyper_para['vocab_size']
 
-def process (proc_file_name, p,total_ngrams_in_data):
+def process (proc_file_name, p,total_ngrams_in_data, hyper_para):
     '''
         p: Params
     '''
 
 
     x_train = np.zeros((total_ngrams_in_data, context_size))
-    y_train = np.zeros((total_ngrams_in_data))
+    #y_train = np.zeros((total_ngrams_in_data))
+    y_train = np.zeros((total_ngrams_in_data, hyper_para['vocab_size']))
     x = np.zeros((1, context_size))
     vocab_dict = p['vocab_dict']
     line_no = 0
@@ -36,10 +37,11 @@ def process (proc_file_name, p,total_ngrams_in_data):
                 x_train[ngram_cnt ,:] = x
 
                 # Create output vector
-                # y = np.zeros((1, vocab_size))
-                # y[0, idxy] = 1
-                # y_train = np.append(y_train, y, axis=0)
-                y_train[ngram_cnt] = idxy
+                y = np.zeros((1, vocab_size))
+                y[0, idxy] = 1
+                #y_train = np.append(y_train, y, axis=0)
+                y_train[ngram_cnt,:] = y
+                #y_train[ngram_cnt] = idxy
                 ngram_cnt += 1
             line_no += 1
             #print line_no
@@ -48,17 +50,17 @@ def process (proc_file_name, p,total_ngrams_in_data):
 def prepare_text_data(param):
     total_ngrams_in_tr_data = hyper_para['total_ngrams_in_tr_data']
     proc_train_file_name = hyper_para['proc_train_file_name']
-    x_train, y_train = process(proc_train_file_name, param,total_ngrams_in_tr_data)
-    # save_obj(x_train, 'x_train')
+    x_train, y_train = process(proc_train_file_name, param,total_ngrams_in_tr_data, hyper_para)
+    save_obj(x_train, 'x_train')
     # #pickel can't sav large objs
-    # np.save('obj/y_train.pkl', y_train) #y = np.load('obj/y_train.npy')
+    np.save('obj/y_train.pkl', y_train) #y = np.load('obj/y_train.npy')
 
 
     total_ngrams_in_val_data = hyper_para['total_ngrams_in_val_data']
     proc_val_file_name = hyper_para['proc_val_file_name']
-    x_val, y_val = process(proc_val_file_name, param, total_ngrams_in_val_data)
-    # save_obj(x_val, 'x_val')
-    # save_obj(y_val, 'y_val')
+    x_val, y_val = process(proc_val_file_name, param, total_ngrams_in_val_data, hyper_para)
+    save_obj(x_val, 'x_val')
+    save_obj(y_val, 'y_val')
 
     return x_train, y_train, x_val, y_val
 
