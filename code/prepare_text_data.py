@@ -51,16 +51,19 @@ def prepare_text_data(param):
     total_ngrams_in_tr_data = hyper_para['total_ngrams_in_tr_data']
     proc_train_file_name = hyper_para['proc_train_file_name']
     x_train, y_train = process(proc_train_file_name, param,total_ngrams_in_tr_data, hyper_para)
-    save_obj(x_train, 'x_train')
+    #save_obj(x_train, 'x_train')
+    np.save('obj/x_train',x_train )
     # #pickel can't sav large objs
-    np.save('obj/y_train.pkl', y_train) #y = np.load('obj/y_train.npy')
+    #np.save('obj/y_train.pkl', y_train) #y = np.load('obj/y_train.npy')
 
 
     total_ngrams_in_val_data = hyper_para['total_ngrams_in_val_data']
     proc_val_file_name = hyper_para['proc_val_file_name']
     x_val, y_val = process(proc_val_file_name, param, total_ngrams_in_val_data, hyper_para)
-    save_obj(x_val, 'x_val')
-    save_obj(y_val, 'y_val')
+    np.save('obj/x_val',x_val )
+    np.save('obj/y_val',y_val )
+    # save_obj(x_val, 'x_val')
+    # save_obj(x_val, 'x_val')
 
     return x_train, y_train, x_val, y_val
 
