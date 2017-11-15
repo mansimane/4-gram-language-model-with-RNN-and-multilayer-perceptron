@@ -1,5 +1,5 @@
 hyper_para = {}
-hyper_para['non_lin'] = '_lin_'   # Size of embedding vector
+hyper_para['non_lin'] = '_tanh_'   # Size of embedding vector
 hyper_para['epochs'] = 3
 
 hyper_para['batch_size'] = 512
