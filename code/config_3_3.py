@@ -1,10 +1,10 @@
 hyper_para = {}
 hyper_para['non_lin'] = '_tanh_'   # Size of embedding vector
-hyper_para['epochs'] = 3
+hyper_para['epochs'] = 100
 
 hyper_para['batch_size'] = 512
 
-hyper_para['hidden_layer_size'] = 128   # 100 hidden units
+hyper_para['hidden_layer_size'] = 256   # 100 hidden units
 
 hyper_para['decay'] = 0.00005      # weight decay
 
@@ -14,7 +14,7 @@ hyper_para['vocab_size'] = 8000   # size of vocabulary
 
 hyper_para['no_of_grams'] = 4
 
-hyper_para['learning_rate'] = 0.005
+hyper_para['learning_rate'] = 0.02
 hyper_para['context_size'] = hyper_para['no_of_grams'] - 1
 
 hyper_para['w_init_mu'] = 0
