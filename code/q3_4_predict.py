@@ -1,6 +1,6 @@
 import numpy as np
 from generic_functions import *
-from config_3_2 import *
+from config_3_3 import *
 from ngram_functions import *
 from plotting_funs import *
 import sys
