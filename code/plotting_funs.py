@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib import gridspec
 import numpy as np
 
+
 def plot_loss_train_valid (train_p, val_p,train_ce, valid_ce ,  hyper_para):
     plt.xlabel('Epochs')
     plt.ylabel('Loss')
