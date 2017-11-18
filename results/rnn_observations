@@ -1,0 +1,19 @@
+word_embedding_size = 16
+RNN_length = 32
+batch_size = 16
+epochs = 100
+learning_rate = 0.01
+
+Loss train: 5.2909	Val:5.3835
+
+
+#
+word_embedding_size = 32
+ loss: 5.1288 - val_loss: 5.3177
+
+#
+word_embedding_size = 64
+loss: 4.9063 - val_loss: 5.3972
+
+#
+word_embedding_size = 128
