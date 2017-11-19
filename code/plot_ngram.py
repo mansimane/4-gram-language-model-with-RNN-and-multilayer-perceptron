@@ -16,8 +16,8 @@ import time
 
 
 def main ():
-    text_file_name = '../data/val_with_tags.txt'
-    # text_file_name = '../data/train_with_tags.txt'
+    #text_file_name = '../data/val_with_tags.txt'
+    text_file_name = '../data/train_with_tags.txt'
     vocab = load_obj('vocab')
     ngram_dict = {}
     with open(text_file_name) as fd_in:
@@ -26,7 +26,7 @@ def main ():
             #Check if lastword is read
             for i in range(0,len(words)-3):
                 ngram_list = words[i:i+4]
-                ngram_str = '_'.join(ngram_list)
+                ngram_str = '  '.join(ngram_list)
                 if ngram_str in ngram_dict:
                     ngram_dict[ngram_str] += 1
                 else:
