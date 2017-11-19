@@ -4,7 +4,7 @@ hyper_para['epochs'] = 100
 
 hyper_para['batch_size'] = 512
 
-hyper_para['hidden_layer_size'] = 256   # 100 hidden units
+hyper_para['hidden_layer_size'] = 512   # 100 hidden units
 
 hyper_para['decay'] = 0.00005      # weight decay
 

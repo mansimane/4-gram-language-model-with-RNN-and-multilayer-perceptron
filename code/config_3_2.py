@@ -8,7 +8,7 @@ hyper_para['hidden_layer_size'] = 256   # 100 hidden units
 
 hyper_para['decay'] = 0.00005      # weight decay
 
-hyper_para['embed_size'] = 16   # Size of embedding vector
+hyper_para['embed_size'] = 64   # Size of embedding vector
 
 hyper_para['vocab_size'] = 8000   # size of vocabulary
 

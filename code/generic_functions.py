@@ -1,8 +1,8 @@
 import re
 import pickle
 import numpy as np
-from sklearn.neighbors import *
-from sklearn.neighbors import KDTree
+# from sklearn.neighbors import *
+# from sklearn.neighbors import KDTree
 
 
 def tokenizeDoc(cur_doc):

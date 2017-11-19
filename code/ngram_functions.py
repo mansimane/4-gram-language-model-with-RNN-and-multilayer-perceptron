@@ -25,7 +25,7 @@ def initialize_weights(hyper_para):
     for key in vocab:
         vocab_dict[key] = i
         i = i+1
-    vocab_dict_inv  = {y:x for x,y in vocab_dict.iteritems()}
+#    vocab_dict_inv  = {y:x for x,y in vocab_dict.iteritems()}
     we_lookup = np.random.normal(mu_c, sig_c, (vocab_size*embed_size))
     we_lookup = we_lookup.reshape(vocab_size,embed_size)
 
@@ -55,7 +55,7 @@ def initialize_weights(hyper_para):
     param = {}
     param['we_lookup'] = we_lookup
     param['vocab_dict'] = vocab_dict
-    param['vocab_dict_inv'] = vocab_dict_inv
+#    param['vocab_dict_inv'] = vocab_dict_inv
     param['w1'] = w1
     param['w2'] = w2
     param['b1'] = b1
