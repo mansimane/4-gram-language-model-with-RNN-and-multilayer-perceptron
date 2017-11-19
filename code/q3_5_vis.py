@@ -31,7 +31,7 @@ def main():
     param['b2'] = b2
 
     vocab_size = hyper_para['vocab_size']
-    no_of_words = 100
+    no_of_words = 500
     ind_arr = np.random.randint(vocab_size, size=no_of_words)
     x = we_lookup[ind_arr, 0]
     y = we_lookup[ind_arr, 1]
