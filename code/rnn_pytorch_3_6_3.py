@@ -5,6 +5,7 @@ import torch.nn as nn
 from torch.autograd import Variable
 import random
 
+batch_size = 16
 n_hidden = 128
 xtrain = np.load('obj/x_train.npy')
 ytrain = np.load('obj/y_train_small.npy')
@@ -24,11 +25,16 @@ print xtrain.shape
 print ytrain.shape
 
 def lineToTensor(line):
-    tensor = torch.zeros(len(line), 1, n_letters)
-    for li, letter in enumerate(line):
-        tensor[li][0][line[li]] = 1
+    batch_size = line.shape[0]
+    tensor = torch.zeros(line.shape[1], batch_size, n_letters)
+    for i in range (batch_size):
+        one_line = line[i,:]
+        for li, letter in enumerate(one_line):
+            tensor[li][i][one_line[li]] = 1
+
+
     return tensor
-p = lineToTensor(xtrain[0,:])
+p = lineToTensor(xtrain[1:9,:])
 print p.shape
 
 
@@ -43,19 +49,21 @@ class RNN(nn.Module):
         self.softmax = nn.LogSoftmax()
 
     def forward(self, input, hidden):
+
         combined = torch.cat((input, hidden), 1)
+
         hidden = self.i2h(combined)
         output = self.i2o(combined)
         output = self.softmax(output)
         return output, hidden
 
     def initHidden(self):
-        return Variable(torch.zeros(1, self.hidden_size))
+        return Variable(torch.zeros(batch_size, self.hidden_size))
 
 rnn = RNN(n_letters, n_hidden, n_categories)
 
 criterion = nn.NLLLoss()
-learning_rate = 0.005
+learning_rate = 0.0005
 
 def categoryFromOutput(output):
     top_n, top_i = output.data.topk(1)  # Tensor out of Variable with .data
@@ -64,9 +72,12 @@ def categoryFromOutput(output):
     return vocab_dict_inv[category_i], category_i
 
 def randomTrainingExample():
-    idx = random.randint(0,  no_of_train_examples)
-    category_tensor = Variable(torch.LongTensor([int(ytrain[idx])]))
+    idx = np.random.randint(no_of_train_examples, size=batch_size)
+
+    category_tensor = Variable(torch.LongTensor((ytrain[idx].astype(int))))
+
     line_tensor = Variable(lineToTensor(xtrain[idx,:]))
+
     return category_tensor, line_tensor
 
 def train(category_tensor, line_tensor):
@@ -89,8 +100,8 @@ def train(category_tensor, line_tensor):
 import time
 import math
 
-n_iters = 100
-print_every = 5
+n_iters = 10000
+print_every = 100
 plot_every = 1000
 
 
