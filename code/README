@@ -1,7 +1,27 @@
 # Author: Mansi Mane
+# Note: for some of the codes it is assumed that system has GPU configured with cud 7.5
+# Also please install package scikit 
 
 #Preprocessing of validation data (Run from code directory)
 cat ../data/val.txt | python pre_process.py val.txt
 
 #Pre-processing of Train data
 cat ../data/val.txt | python pre_process.py train.txt
+
+#To Run language model with linearity, edit configuration config_3_2.py and then run
+python2.7 ngram_3_2.py
+
+#To Run language model with tanh, edit configuration config_3_3.py and then run
+python2.7 ngram_3_3.py
+
+#Make results folder parallel to code directory to save the results
+
+#To train RNN with keras for question 3.6.1 and 3.6.2 run 
+python3.6 q3_6_1_rnn.py
+
+#To train RNN with truncated backpropagation run 
+Comment line 58 and 28 in ngram_functions.py and then run
+python3.6 rnn_truncated.py
+
+#To run analysis run
+
